@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{% static 'favicon.ico" type="image/x-icon' %}">
+  <!-- ./wrapper -->
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{% static 'dist/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/adminlte/css/adminlte.min.css' %}">
+  <!-- Bootstrap 5 style -->
+  <link rel="stylesheet" href="{% static 'dist/plugins/bootstrap5/css/bootstrap.min.css' %}">
+  <title>
+    Django AdminLTE - {% block title %}{% endblock %} | UI
+  </title> 
+
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body class="hold-transition layout-fixed layout-top-nav sidebar-mini {% block body_class %}{% endblock body_class %}" data-panel-auto-height-mode="height">
+<div class="wrapper">
+    <!--Any flash messages pop up in any page because this is the base template-->
+    {% if messages %}
+      <div class="alert alert-dismissible" role="alert">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}
+        {% endfor %}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock content %}
+
+</div>
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>
+
