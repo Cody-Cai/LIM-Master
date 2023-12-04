@@ -1,0 +1,165 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-colreorder/css/colReorder.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-select/css/select.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
+  <!-- overlayScrollbars -->
+  <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid px-3 py-2">
+        <div class="row">
+          <div class="col-sm-6 d-flex align-items-center">
+            <h4>{% translate 'Language List' %}</h4>
+          </div>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a class ="text-decoration-none" href="#">{% translate 'System' %}</a></li>
+                <li class="breadcrumb-item active">{% translate 'Language List' %}</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+        <div class="card-header">
+          {% if perms.system.add_language %}
+          <a hx-get="{% url 'system:language-create' %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+          data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
+            <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+          </a>
+          {% endif %}
+          {% if perms.authentication.change_group %}
+          <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
+            <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
+          </button>
+          {% endif %}
+          {% if perms.authentication.delete_group %}
+          <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
+            <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+          </button>
+          {% endif %}
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="LangList" class="table table-sm table-bordered table-striped table-hover display" style="width:100%">
+              <thead>
+                  <tr>
+                    <th>{% translate 'code' %}</th>
+                    <th>{% translate 'Description' %}</th>
+                  </tr>
+              </thead>
+            </table>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- /.content -->
+  </div>
+
+  <!-- Placeholder for the offcanvas -->
+  <div id="offcanvas" class="offcanvas offcanvas-end" aria-labelledby="offcanvasLabel" hx-target="this">
+  </div>
+
+  <!-- Placeholder for the modal -->
+  <div id="modal" class="modal">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+  </div>
+
+{% endblock content %}  
+
+{% block javascripts %}
+<script src="{% static 'dist/plugins/datatables/jquery.datatables.min.js' %}"></script>
+<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>-->
+<script src="{% static 'dist/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+<!--<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>-->
+<script src="{% static 'dist/plugins/datatables-colreorder/js/dataTables.colReorder_v17.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables-select/js/dataTables.select_v1.7.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static "dist/js/offcanvas.js" %}"></script>
+<script src="{% static "dist/js/modal.js" %}"></script>
+<script>
+$(document).ready(function(){    
+  table = new DataTable('#LangList',{
+      ajax: "{% url 'system:language-json' %}",
+      columns: [
+          { data: 'code' },
+          { data: 'description' },
+      ],
+      rowId: 'id',
+      select: {
+          style: 'single'
+      },
+      colReorder: true,
+      "initComplete": function( settings, json ) {
+                    htmx.process('#LangList');
+      },
+  });
+  
+  table
+    .on('select', function (e, dt, type, indexes) {
+      $('#btnEdit,#btnDel').removeAttr("disabled");
+    })
+    .on('deselect', function (e, dt, type, indexes) {
+      $('#btnEdit,#btnDel').attr("disabled", "disabled");
+    });
+
+  document.body.addEventListener("reloadTable", function(evt){
+    table.ajax.reload(function() {
+        htmx.process('#LangList');
+    }, false)
+  });
+  
+  $("#btnEdit").click(function () {    
+      var id = table.row({ selected: true }).id();
+      doUpdate(id);
+  });
+  $("#btnDel").click(function () {    
+      var id = table.row({ selected: true }).id();
+      doDelete(id);
+  });
+})
+</script>
+<script>
+function showdata() {
+  var code = document.getElementById("id_code").value;
+  $.get( "{% url 'system:langinfojson' %}", { code: code } )
+    .done(function( data ) {
+      if (Object.keys(data.data).length === 0) {
+        $("#id_code").addClass("is-invalid");
+        $('#id_msg').append(data.msg.errmsg);
+        $('#id_description').val('');
+        $("#id_code").focus();
+      } else {
+        $("#id_code").removeClass("is-invalid");
+        $('#id_description').val(data.data.name_local);
+      }
+  });
+}
+
+function doUpdate(id) {
+    // issue a GET to /example and replace #offcanvas with the response
+  htmx.ajax('GET', "{% url 'system:language-update' 123 %}".replace(/123/, id.toString()), {target:'#offcanvas', swap:'innerHTML'});
+}
+function doDelete(id) {
+  //window.location.href = "{% url 'group-delete' 123 %}".replace(/123/, id.toString())
+    // issue a GET to /example and replace #offcanvas with the response
+  htmx.ajax('GET', "{% url 'system:language-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'});
+}
+</script>
+{% endblock javascripts %}

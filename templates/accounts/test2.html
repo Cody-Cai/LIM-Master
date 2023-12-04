@@ -1,29 +1,367 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
-    <title>Bootstrap Example</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-  </head>
-  <body class="p-3 m-0 border-0 bd-example m-0 border-0 bg-dark">
+{% extends "layouts/base.html" %}
+{% load static %}
 
-    <!-- Example Code -->
-    
-    <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <svg class="bd-placeholder-img rounded me-2" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#007aff"></rect></svg>
-        <strong class="me-auto">Bootstrap</strong>
-        <small class="text-body-secondary">11 mins ago</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        Hello, world! This is a toast message.
-      </div>
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="{% static 'dist/plugins/jquery-transfer/icon_font/css/icon_font.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'dist/plugins/jquery-transfer/css/jquery.transfer.css' %}" />
+  <style>
+        .transfer-demo {
+            width: 640px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        .transfer-double-group-list-li-ul {
+            padding-left: 0;
+        }
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+    <div>
+        {{ fullname }} {{ user.get_short_name }}
+        <div class="container">
+        <h1>jQuery Transfer: Dual Listbox Plugin Example</h1>
+        <div style="margin-top:50px">
+        Selected: <span id="selectedItemSpan"></span>
+        </div>
+        <div id="transfer1" class="transfer-demo"></div>
+        <div id="transfer2" class="transfer-demo"></div>
+        <div id="transfer3" class="transfer-demo"></div>
+        <div id="transfer4" class="transfer-demo"></div>
+        <div id="transfer5" class="transfer-demo"></div>
     </div>
-    
-    <!-- End Example Code -->
-  </body>
-</html>
+{% endblock content %}  
+
+{% block javascripts %}
+<script type="text/javascript" src="{% static 'dist/plugins/jquery-transfer/js/jquery.transfer.js' %}"></script>
+<script type="text/javascript">
+    var dataArray1 = [
+        {
+            "city": "Beijing",
+            "value": 132
+        },
+        {
+            "city": "Shanghai",
+            "value": 422
+        },
+        {
+            "city": "Chengdu",
+            "value": 232
+        },
+        {
+            "city": "Wuhan",
+            "value": 765
+        },
+        {
+            "city": "Tianjin",
+            "value": 876
+        },
+        {
+            "city": "Guangzhou",
+            "value": 453
+        },
+        {
+            "city": "Hongkong",
+            "value": 125
+        }
+    ];
+
+    var settings1 = {
+        "dataArray": dataArray1,
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items)
+        }
+    };
+
+    $("#transfer1").transfer(settings1);
+</script>
+
+<script>
+
+    var dataArray2 = [
+        {
+            "city": "Beijing",
+            "value": 132,
+            "disabled": true
+        },
+        {
+            "city": "Shanghai",
+            "value": 422,
+            "selected": true
+        },
+        {
+            "city": "Chengdu",
+            "value": 232
+        },
+        {
+            "city": "Wuhan",
+            "value": 765,
+            "selected": true,
+            "disabled": true
+        },
+        {
+            "city": "Tianjin",
+            "value": 876
+        },
+        {
+            "city": "Guangzhou",
+            "value": 453
+        },
+        {
+            "city": "Hongkong",
+            "value": 125
+        }
+    ];
+
+    var settings2 = {
+        "dataArray": dataArray2,
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items)
+        }
+    };
+
+    $("#transfer2").transfer(settings2);
+</script>
+
+<script>
+    var groupDataArray1 = [
+        {
+            "groupName": "China",
+            "groupData": [
+                {
+                    "city": "Beijing",
+                    "value": 122
+                },
+                {
+                    "city": "Shanghai",
+                    "value": 643
+                },
+                {
+                    "city": "Qingdao",
+                    "value": 422
+                },
+                {
+                    "city": "Tianjin",
+                    "value": 622
+                }
+            ]
+        },
+        {
+            "groupName": "Japan",
+            "groupData": [
+                {
+                    "city": "Tokyo",
+                    "value": 132
+                },
+                {
+                    "city": "Osaka",
+                    "value": 112
+                },
+                {
+                    "city": "Yokohama",
+                    "value": 191
+                }
+            ]
+        }
+    ];
+
+    var settings3 = {
+        "groupDataArray": groupDataArray1,
+        "groupItemName": "groupName",
+        "groupArrayName": "groupData",
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items[0].city)
+        }
+    };
+
+    $("#transfer3").transfer(settings3);
+</script>
+
+<script>
+    var groupDataArray2 = [
+        {
+            "groupName": "China",
+            "groupData": [
+                {
+                    "city": "Beijing",
+                    "value": 122,
+                    "selected": true
+                },
+                {
+                    "city": "Shanghai",
+                    "value": 643,
+                    "disabled": true
+                },
+                {
+                    "city": "Qingdao",
+                    "value": 422
+                },
+                {
+                    "city": "Tianjin",
+                    "value": 622
+                }
+            ]
+        },
+        {
+            "groupName": "Japan",
+            "groupData": [
+                {
+                    "city": "Tokyo",
+                    "value": 132,
+                    "selected": true
+                },
+                {
+                    "city": "Osaka",
+                    "value": 112,
+                    "selected": true
+                },
+                {
+                    "city": "Yokohama",
+                    "value": 191,
+                    "selected": true
+                }
+            ]
+        }
+    ];
+
+    var settings4 = {
+        "groupDataArray": groupDataArray2,
+        "groupItemName": "groupName",
+        "groupArrayName": "groupData",
+        "itemName": "city",
+        "valueName": "value",
+        "callable": function (items) {
+            console.dir(items)
+        }
+    };
+
+    var transfer = $("#transfer4").transfer(settings4);
+    // get selected items
+    var items = transfer.getSelectedItems()
+    console.log("Manually get selected items: %o", items);
+</script>
+
+<script>
+    var languages = [
+        {
+            "language": "jQuery",
+            "value": 122
+        },
+        {
+            "language": "AngularJS",
+            "value": 132
+        },
+        {
+            "language": "ReactJS",
+            "value": 422
+        },
+        {
+            "language": "VueJS",
+            "value": 232
+        },
+        {
+            "language": "JavaScript",
+            "value": 765
+        },
+        {
+            "language": "Java",
+            "value": 876
+        },
+        {
+            "language": "Python",
+            "value": 453
+        },
+        {
+            "language": "TypeScript",
+            "value": 125
+        },
+        {
+            "language": "PHP",
+            "value": 633
+        },
+        {
+            "language": "Ruby on Rails",
+            "value": 832
+        }
+    ];
+
+    var groupData = [
+        {
+            "groupName": "JavaScript",
+            "groupData": [
+                {
+                    "language": "jQuery",
+                    "value": 122
+                },
+                {
+                    "language": "AngularJS",
+                    "value": 643
+                },
+                {
+                    "language": "ReactJS",
+                    "value": 422
+                },
+                {
+                    "language": "VueJS",
+                    "value": 622
+                }
+            ]
+        },
+        {
+            "groupName": "Popular",
+            "groupData": [
+                {
+                    "language": "JavaScript",
+                    "value": 132
+                },
+                {
+                    "language": "Java",
+                    "value": 112
+                },
+                {
+                    "language": "Python",
+                    "value": 124
+                },
+                {
+                    "language": "TypeScript",
+                    "value": 121
+                },
+                {
+                    "language": "PHP",
+                    "value": 432
+                },
+                {
+                    "language": "Ruby on Rails",
+                    "value": 421
+                }
+            ]
+        }
+    ];
+
+    var settings = {
+        "inputId": "languageInput",
+        "dataArray": languages,
+        "groupDataArray": groupData,
+        "itemName": "language",
+        "groupItemName": "groupName",
+        "groupArrayName" : "groupData",
+        "container": "transfer",
+        "valueName": "value",
+        searchPlaceholderText: "Filter",
+        "callable" : function (items) {
+            console.log("Selected ID:" + items)
+            $("#selectedItemSpan").text(items[0].language)
+        }
+    };
+
+    $("#transfer5").transfer(settings);
+</script>
+
+
+{% endblock javascripts %}

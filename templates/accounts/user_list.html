@@ -1,0 +1,236 @@
+{% extends "layouts/base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %} {% translate 'User List' %} {% endblock %} 
+
+{% block stylesheets %}
+  <!-- Bootstrap 5 style -->
+  <link rel="stylesheet" href="{% static 'dist/plugins/bootstrap5/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-colreorder/css/colReorder.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-select/css/select.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
+  <!-- overlayScrollbars -->
+  <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
+{% endblock stylesheets %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} {% endblock body_class %} 
+
+{% block content %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid px-3 py-2">
+        <div class="row">
+          <div class="col-sm-6 d-flex align-items-center">
+            <h4>{% translate 'User List' %}</h4>
+          </div>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a class ="text-decoration-none" href="#">{% translate 'System' %}</a></li>
+                <li class="breadcrumb-item active">{% translate 'User List' %}</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+        <div class="card-header">
+          {% if perms.authentication.add_user %}
+          <a hx-get="{% url 'user-create' %}" accesskey="A" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+          data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
+            <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+          </a>
+          {% endif %}
+          {% if perms.authentication.change_user %}
+          <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
+            <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
+          </button>
+          {% endif %}
+          {% if perms.authentication.delete_user %}
+          <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
+            <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+          </button>
+          {% endif %}
+          {% if perms.authentication.set_password %}
+          <button type="button" id="btnSetPwd" class="btn btn-outline-primary btn-sm float-end" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Reset password' %} disabled>
+            <i class="fa-solid fa-key"></i>&nbsp;&nbsp;{% translate 'Password reset' %}
+          </button>
+          {% endif %}
+          {% if perms.authentication.view_permission %}
+          <button type="button" id="setPermissions" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Set Permissions' %} disabled>
+            <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
+          </button>
+          {% endif %}
+          {% if perms.authentication.set_profile %}
+          <button type="button" id="btnSetProfile" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Profile' %} disabled>
+            <i class="fa-solid fa-gear"></i>&nbsp;&nbsp;{% translate 'Profile' %}
+          </button>
+          {% endif %}
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="userList" class="table table-sm table-bordered table-striped table-hover display" style="width:100%">
+              <thead>
+                  <tr>
+                      <th>{% translate 'Username' %}</th>
+                      <th>{% translate 'Email address' %}</th>
+                      <th>{% translate 'First name' %}</th>
+                      <th>{% translate 'Last Name' %}</th>
+                      <th>{% translate 'Active' %}</th>
+                      <th>{% translate 'SuperUser' %}</th>
+                  </tr>
+              </thead>
+            </table>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- /.content -->
+  </div>
+
+  <!-- Placeholder for the offcanvas -->
+  <div id="offcanvas" class="offcanvas offcanvas-end" aria-labelledby="offcanvasLabel" hx-target="this">
+  </div>
+
+  <!-- Placeholder for the modal -->
+  <div id="modal" class="modal">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+  </div>
+
+{% endblock content %}  
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+{% block javascripts %}
+
+<script src="{% static 'dist/plugins/datatables/jquery.datatables.min.js' %}"></script>
+<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>-->
+<script src="{% static 'dist/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+<!--<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>-->
+<script src="{% static 'dist/plugins/datatables-colreorder/js/dataTables.colReorder_v17.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables-select/js/dataTables.select_v1.7.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<!-- overlayScrollbars -->
+<!--<script src="{% static 'dist/plugins/overlayScrollbars/js/jquery.overlayScrollbars_v2.min.js' %}"></script>-->
+<!-- components@1.9.5 -->
+<script src="{% static "dist/js/offcanvas.js" %}"></script>
+<script src="{% static "dist/js/modal.js" %}"></script>
+
+<script>
+$(document).ready(function(){
+  var usertable = new DataTable('#userList', {
+    ajax: "{% url 'user-Json' %}",
+    columns: [
+        { data: 'username' },
+        { data: 'email' },
+        { data: 'first_name' },
+        { data: 'last_name' },
+        { 
+          data: 'is_active',
+          //bSortable: false,
+          render: function (data, type) {
+            if (type === 'display') {
+              let disClass = 'fa-solid fa-circle-xmark text-danger';
+              if (data == 1) {
+                disClass = 'fa-solid fa-circle-check text-success'; 
+              }
+              return '<i class="'+ disClass + '"></i>'
+            }
+            return data;
+          } 
+        },
+        { 
+          data: 'is_superuser',
+          render: function (data, type) {
+            if (type === 'display') {
+              let disClass = 'fa-solid fa-circle-xmark text-danger';
+              if (data == 1) {
+                disClass = 'fa-solid fa-circle-check text-success'; 
+              }
+              return '<i class="'+ disClass + '"></i>'
+            }
+            return data;
+          }
+        },
+      ],
+    rowId: 'id',
+    select: {
+        style: 'single'
+    },
+    colReorder: true,
+    "initComplete": function( settings, json ) {
+                  htmx.process('#userList');
+    },
+  });
+
+  usertable
+    .on('select', function (e, dt, type, indexes) {
+      $('#btnEdit,#btnDel,#btnSetPwd,#btnSetProfile,#setPermissions').removeAttr("disabled");
+    })
+    .on('deselect', function (e, dt, type, indexes) {
+      $('#btnEdit,#btnDel,#btnSetPwd,#btnSetProfile,#setPermissions').attr("disabled", "disabled");
+    });
+
+  document.body.addEventListener("reloadTable", function(evt){
+    usertable.ajax.reload(function() {
+        htmx.process('#userList');
+    }, false)
+  });
+
+  $("#btnEdit").click(function () {    
+      var id = usertable.row({ selected: true }).id();
+      doUpdate(id);
+  });
+  $("#btnDel").click(function () {    
+      var id = usertable.row({ selected: true }).id();
+      doDelete(id);
+  });
+  $("#btnSetProfile").click(function () {    
+      var id = usertable.row({ selected: true }).id();
+      setUserProfile(id);
+  });
+  $("#btnSetPwd").click(function () {    
+      var id = usertable.row({ selected: true }).id();
+      resetPassword(id);
+  });
+  $("#setPermissions").click(function () {    
+      var id = usertable.row({ selected: true }).id();
+      setPermissions(id);
+  });
+})
+</script>
+
+<script>
+  function doUpdate(id) {
+      // issue a GET to /example and replace #offcanvas with the response
+    htmx.ajax('GET', "{% url 'user-update' 123 %}".replace(/123/, id.toString()), {target:'#offcanvas', swap:'innerHTML'})
+  }
+  function doDelete(id) {
+      // issue a GET to /example and replace #offcanvas with the response
+    htmx.ajax('GET', "{% url 'user-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'})
+  }
+  function resetPassword(id) {
+      // issue a GET to /example and replace #offcanvas with the response
+    htmx.ajax('GET', "{% url 'password_reset' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'})
+  }
+  function setUserProfile(id) {
+      // issue a GET to /example and replace #offcanvas with the response
+    htmx.ajax('GET', "{% url 'user-profile' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'})
+  }
+  function setPermissions(id) {
+      // issue a GET to /example and replace #offcanvas with the response
+    window.location.href = "{% url 'user-permissions' 123 %}".replace(/123/, id.toString());
+  }
+</script>
+
+{% endblock javascripts %}

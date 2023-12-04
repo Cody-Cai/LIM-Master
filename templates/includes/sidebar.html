@@ -22,7 +22,6 @@
       </div>
 
       <!-- Sidebar Menu -->
-      <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
@@ -48,10 +47,10 @@
                   <p>Dashboard v2</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="./index3.html" class="nav-link">
+              <li class="nav-item"> 
+                <a href="{% url 'system:language' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v3</p>
+                  <p>Language</p>
                 </a>
               </li>
             </ul>
@@ -66,13 +65,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="pages/forms/general.html" class="nav-link">
+                <a href="{% url 'users' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>General Elements</p>
+                  <p>User List</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/forms-advanced.html" class="nav-link">
+                <a href="{% url 'group' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Group List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'test' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Advanced Elements</p>
                 </a>

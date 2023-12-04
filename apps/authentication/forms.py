@@ -1,10 +1,10 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserCreationForm, AuthenticationForm
 from django import forms
 from django.forms import ModelForm, TextInput, HiddenInput
 from .models import User, Profile
+from django.utils.translation import gettext_lazy as _
 
-
-class LoginForm(forms.Form):
+class LoginForm(AuthenticationForm):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -92,3 +92,15 @@ class UpdateProfileForm(ModelForm):
     class Meta:
         model = Profile
         fields = ['avatar']
+
+
+class UserCreateForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2','is_superuser','is_active']
+
+
+class UserForm(ModelForm):
+    class Meta:
+        model =  User
+        fields = ['username', 'email', 'first_name', 'last_name', 'is_superuser', 'is_active']

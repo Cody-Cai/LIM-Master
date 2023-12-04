@@ -1,0 +1,94 @@
+{% extends "layouts/base.html" %}
+{% load i18n static widget_tweaks %}
+
+{% block title %}{% translate 'Group Permissions' %}{% endblock %} 
+
+{% block stylesheets %}
+<!--bootstrap4 duallistbox -->
+<link rel="stylesheet" href="{% static 'dist/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+ 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid px-3 py-2">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>{% translate 'Group Permissions' %}</h2>
+          </div>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">{% translate 'Home' %}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'group' %}">{% translate 'Group' %}</a></li>
+                <li class="breadcrumb-item active">{% translate 'Group Permissions' %}</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card card-primary card-outline" id="userCard">
+            <h5 class="card-header">{% translate 'Change permissions' %}</h5>
+            <form method="post">{% csrf_token %}
+              <div class="card-body">
+                <div class="row row-cols-lg-auto g-3 align-items-center">
+                  <div class="col-12"><label class="from-label fw-bold" for="{{ form.name.id_for_label }}">Group Name</label></div>
+                  <div class="col-12">
+                    {% render_field form.name class="form-control-plaintext" readonly="readonly" %}
+                  </div>
+                  <div class="col-12">{{ object.description }}</div>
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <label for="{{ form.permissions.id_for_label }}" class="form-label fw-bold">{% translate 'Permissions' %}</label>
+                    {{ form.permissions }} 
+                </div>
+              </div>
+                <!-- /.card-body -->
+              <div class="card-footer">
+                <a class="btn btn-secondary" href="{% url 'group' %}">{% translate 'Return' %}</a>
+                <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>                 
+              </div>
+            </form>
+        </div>
+        <!-- /.card -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+{% endblock content %}  
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+{% block javascripts %}
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'dist/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<script type="text/javascript">
+   $(function () {
+    $("#id_permissions").bootstrapDualListbox({
+      nonSelectedListLabel: 'Non-selected',
+      selectedListLabel: 'Selected',
+      preserveSelectionOnMove: 'moved',
+      moveOnSelect: false,
+      nonSelectedFilter: '',
+      selectorMinimalHeight: 300,
+      infoTextFiltered: '<span class="badge text-bg-warning">Filtered</span> {0} from {1}',
+    });
+ 
+    $('.clear1,.clear2').addClass("btn-light");
+   });
+   
+</script>
+
+{% endblock javascripts %}

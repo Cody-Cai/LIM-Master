@@ -1,7 +1,7 @@
 {% extends "layouts/base-fullscreen.html" %}
-{% load static %}
+{% load i18n static %}
 
-{% block title %} Login {% endblock %} 
+{% block title %}{% translate 'Login' %}{% endblock %} 
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} login-page {% endblock body_class %}
@@ -11,8 +11,10 @@
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'dist/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Font Awesome 
+  <link rel="stylesheet" href="{% static 'dist/plugins/fontawesome-free/css/all.min.css' %}">-->
+  <!-- update existing v5 CSS to use v6 icons and assets -->
+  <link href="{% static 'dist/plugins/fontawesome-free-v6/css/all.min.css' %}" rel="stylesheet" />
   <!-- icheck bootstrap -->
   <link rel="stylesheet" href="{% static 'dist/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
   <!-- Theme style -->
@@ -33,18 +35,44 @@
     <div class="card">
       <div class="card-body login-card-body">
 
-            <p class="login-box-msg">
-            {% if msg %}
-                {{ msg | safe }}
-            {% else %}
-                Sign in to start your session
-            {% endif %}
+        <p class="login-box-msg">
+          {% translate 'Sign in to start your session' %}
         </p>
-
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <ul class="errorlist list-unstyled">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+          <input name="next" type="hidden" value="{{ redirect_to }}">
+          <div class="input-group mb-3">
+              <select name="language" id="lang" class="form-control">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                        {{ language.name_local }} ({{ language.code }})
+                    </option>
+                {% endfor %}
+              </select>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fa-solid fa-globe"></span>
+              </div>
+            </div>
+            <input id="btnChange" type="submit" class="d-none" value={% translate "Go" %}>
+          </div>        
+        </form>
         <form method="post" action="">
-
           {% csrf_token %}
-
           <div class="input-group mb-3">
             {{ form.username }}
             <div class="input-group-append">
@@ -53,6 +81,7 @@
               </div>
             </div>
           </div>
+          <span class="text-error">{{ form.username.errors }}</span>
           <div class="input-group mb-3">
             {{ form.password }}
             <div class="input-group-append">
@@ -66,13 +95,13 @@
               <div class="icheck-primary">
                 {{ form.remember_me }}
                 <label for="{{ form.remember_me.id_for_label }}">
-                  Remember Me
+                  {% translate 'Remember Me' %}
                 </label>
               </div>
             </div>
             <!-- /.col -->
             <div class="col-4">
-              <button type="submit" name="login" class="btn btn-primary btn-block">Sign In</button>
+              <button type="submit" name="login" class="btn btn-primary btn-block">{% translate 'Sign In' %}</button>
             </div>
             <!-- /.col -->
           </div>
@@ -81,9 +110,6 @@
         <br /><br />
 
         <div class="text-center">
-            Not a member? <a href="{% url 'register' %}" class="text-center">Register</a>
-            <br />
-            <br />
             &copy; ColorLib 
             <a target="_blank" rel="noopener noreferrer"
                href="https://appseed.us/admin-dashboards/django-dashboard-adminlte"><b>Admin</b>LTE</a> 
@@ -105,5 +131,10 @@
   <script src="{% static 'dist//plugins/jquery/jquery.min.js' %}"></script>
   <!-- Bootstrap 4 -->
   <script src="{% static 'dist/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
+  <script>
+    $("select#lang").change(function(){
+      //alert($(this).val());
+      $("#btnChange").click();
+    });
+  </script>
 {% endblock javascripts %}

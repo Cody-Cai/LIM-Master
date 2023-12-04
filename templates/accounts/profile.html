@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
-{% load static %}
+{% load i18n static %}
 
-{% block title %} User Profile {% endblock %} 
+{% block title %}{% translate 'User Profile' %}{% endblock %} 
 
 {% block stylesheets %}
 {% endblock stylesheets %}
@@ -11,21 +11,22 @@
 
 {% block content %}
  
- 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
+      <div class="container-fluid px-3 py-2">
+        <div class="row">
           <div class="col-sm-6">
-            <h1>Profile</h1>
+            <h2>{% translate 'Profile' %}</h2>
           </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-              <li class="breadcrumb-item active">User Profile</li>
-            </ol>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">{% translate 'Home' %}</a></li>
+              <li class="breadcrumb-item active">{% translate 'User Profile' %}</li>
+              </ol>
+            </nav>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -40,60 +41,59 @@
             <!-- Profile Image -->
             <div class="card card-primary card-outline">
               <div class="card-body box-profile">
-                <div class="text-center">
+                <div class="text-center border-bottom mb-3">
                   <img class="img-fluid img-thumbnail rounded-circle border-3"
                        src="{{ user.profile.avatar.url }}"
                        alt="User profile picture">
-                </div>
-
-                <h3 class="profile-username text-center">
+                  <h3 class="profile-username text-center">
                   {{ user.username }}
-                </h3>
-                <p class="text-muted text-center">
-                  {{ user.email }}
-                </p>
-
-                <a href="{% url 'password_change' %}" class="btn btn-danger btn-block"><b>Change Password</b></a>
+                  </h3>              
+                  <p class="text-muted text-center">
+                    {{ user.email }}
+                  </p>
+                </div>
+                {% if perms.authentication.change_password %}
+                <div class="d-grid gap-2">
+                  <button class="btn btn-danger" hx-get="{% url 'password_change' %}" hx-target="#dialog"><b>{% translate 'Change Password' %}</b></button>
+                </div> 
+                {% endif %}
               </div>
               <!-- /.card-body -->
             </div>
-            <!-- /.card -->          
+            <!-- /.card -->
           </div>
           <!-- /.col -->
           
           <div class="col-md-9">
             <div class="card card-primary card-outline" id="userCard">
-              <div class="card-header">
-                <h5 class="m-0">Setting</h5>
-              </div><!-- /.card-header -->
-
+              <h5 class="card-header">{% translate 'Setting' %}</h5>
               <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-body">
                   <div>
                       {{ user_form.username }}
                   </div>
-                  <div class="form-group">
-                    <label for="{{ user_form.email.id_for_label }}" class="form-label">Email address</label>
+                  <div class="mb-3">
+                    <label for="{{ user_form.email.id_for_label }}" class="form-label">{% translate 'Email address' %}</label>
                       {{ user_form.email }}
                   </div>
-                  <div class="form-group">
-                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">First Name</label>
+                  <div class="mb-3">
+                    <label for="{{ user_form.first_name.id_for_label }}" class="form-label">{% translate 'First Name' %}</label>
                       {{ user_form.first_name }}
                   </div>
-                  <div class="form-group">
-                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                  <div class="mb-3">
+                    <label for="{{ user_form.last_name.id_for_label }}" class="form-label">{% translate 'Last Name' %}</label>
                       {{ user_form.last_name }}
                   </div>
-                  <div class="form-group">
-                    <label class="small mb-1" for="{{ profile_form.avatar.id_for_label }}">Change Avatar:</label>
+                  <div class="mb-3">
+                    <label class="small mb-1" for="{{ profile_form.avatar.id_for_label }}">{% translate 'Change Avatar' %}:</label>
                       {{ profile_form.avatar }}
                   </div>                 
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                  <button type="reset" class="btn btn-dark">Reset</button>
+                  <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>
+                  <button type="reset" class="btn btn-dark">{% translate 'Reset' %}</button>
                 </div>
               </form>            
             </div>
@@ -107,19 +107,27 @@
     <!-- /.content -->
   </div>
 
+  <!-- Placeholder for the modal -->
+  <!--<div id="modal" class="modal">-->
+  <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+  </div>
+
+
 {% endblock content %}  
 <!-- ./wrapper -->
 
 <!-- REQUIRED SCRIPTS -->
 
 {% block javascripts %}
-<!-- jQuery -->
-<script src="{% static 'dist/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{% static 'dist/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static 'dist/adminlte/js/adminlte.min.js' %}"></script>
-<!-- Bootstrap 5 -->
-<!--<script src="{% static 'dist/plugins/bootstrap5/js/bootstrap.bundle.min.js' %}"></script>-->
+<!-- components -->
+<script src="{% static "dist/js/modal.js" %}"></script>
+
+<script>
+  htmx.on("reloadpage", (e) => {
+    location.reload();
+  });
+</script>
+
 
 {% endblock javascripts %}

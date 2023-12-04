@@ -1,0 +1,28 @@
+{% load i18n %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{{ request.path }}" class="modal-content" enctype="multipart/form-data">
+  <div class="modal-header">
+    <h5 class="modal-title"><i class="fa-solid fa-gear"></i>&nbsp;&nbsp;{% translate 'User Profile' %}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+        <div class="text-center">
+            <img class="img-fluid img-thumbnail rounded-circle border-3"
+                src="{{ user.profile.avatar.url }}"
+                alt="User profile picture">
+        </div>
+
+        <h3 class="profile-username text-center">
+            {{ user.username }}
+        </h3>
+        <hr>
+        <div class="form-group">
+            <label class="small mb-1" for="{{ form.avatar.id_for_label }}">{% translate 'Change Avatar' %}:</label>
+                {{ form.avatar }}
+        </div> 
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-block">{% translate 'Confirm' %}</button>
+  </div>
+</form>
+{% endwith %}
