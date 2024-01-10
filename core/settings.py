@@ -38,7 +38,7 @@ DEBUG = True
 # Assets Management
 ASSETS_ROOT = os.getenv('ASSETS_ROOT', 'static/dist') 
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ["127.0.0.1",'localhost']
 
 # Add here your deployment HOSTS
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://localhost:5085', 'http://127.0.0.1']
@@ -149,10 +149,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 #'en-us'
-LANGUAGE_CODE = 'zh-Hans'
+LANGUAGE_CODE = 'en-us'
 
-#TIME_ZONE = 'UTC'
-TIME_ZONE = 'Asia/Shanghai'
+TIME_ZONE = 'UTC'
+#TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -160,7 +160,7 @@ USE_TZ = True
 
 # Langeuage selection
 LANGUAGES = (
-    ('en', _('English')),
+    ('en-us', _('English')),
     ('zh-hans', _('Simplified Chinese')),
 )
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]

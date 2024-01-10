@@ -1,0 +1,39 @@
+{% load i18n static widget_tweaks %}
+<form hx-post="{{ request.path }}" class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title"><i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Menu Text' %}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+     <p class="delete-text">{% translate 'Name' %}:
+      <strong>{{ menu }}</strong></p>
+    {{formset.management_form}}
+    <div class="row row-cols-3">
+        <div class="col"><strong>Fee Type</strong></div>
+        <div class="col"><strong>Amount</strong></div>
+        <div class="col"><strong>Delete</strong></div>
+    </div>
+    {% for link_form in formset.forms %}
+    <div class="input-group row items-group row-cols-3 mb-3">
+      {% if link_form.instance.pk %}{{ link_form.DELETE }}{% endif %}{{ link_form.id }}
+      <div class="col">{{ link_form.lang | add_class:"form-control" }}</div>
+      <div class="col">{{ link_form.name | add_class:"form-control" }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="modal-footer flex-nowrap p-0">
+    <button type="submit" class="btn btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" >{% translate 'Confirm' %}</button>
+    <button type="button" class="btn btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+      {% translate 'Cancel' %}
+    </button>
+  </div>
+</form>
+<script>
+   $(".items-group").formset(
+    {
+      prefix: '{{ items.prefix }}',
+      deleteText: "<div class='col btn btn-danger btn-circle'><i class='fas fa-trash'></i></div>",
+      addText: "<div class='btn btn-success btn-circle'><i class='fas fa-plus'></i></div>"
+    }
+   );
+</script>

@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
   <!-- overlayScrollbars -->
   <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
+  <!-- datatable selected rows -->
+  <link rel="stylesheet" href="{% static 'dist/css/style.css' %}">
 {% endblock stylesheets %}
 
 <!-- Element injected in the BODY element -->
@@ -66,7 +68,7 @@
             <i class="fa-solid fa-key"></i>&nbsp;&nbsp;{% translate 'Password reset' %}
           </button>
           {% endif %}
-          {% if perms.authentication.view_permission %}
+          {% if perms.auth.view_permission %}
           <button type="button" id="setPermissions" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Set Permissions' %} disabled>
             <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
           </button>

@@ -2,8 +2,34 @@ from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy, resolve
+from django.views.generic.base import View
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from apps.system.models import Menu
+from django.shortcuts import render
 # Create your views here.
+
+
+class IndexView(LoginRequiredMixin, View):
+    def get(self, request):
+        #print(request.path_info)
+        match  = resolve(request.path_info)
+        # print(match.url_name)
+        # print(match.app_name)
+        # print(match.view_name)
+        menu_nav = Menu.objects.filter(menutype="N")
+        menu_top = Menu.objects.get(url='home')
+        menu_side = Menu.objects.filter(parent = menu_top)
+        menu_home = menu_side.filter(is_home=True)[0]
+        # for menu in menu_home:
+        print(menu_home.url)
+
+        context = {
+            'menu_nav': menu_nav,
+            'menu_side': menu_side,
+            'menu_home': menu_home,
+        }
+        return render(request, 'home/ihome.html', context=context)
 
 @login_required
 def index(request):

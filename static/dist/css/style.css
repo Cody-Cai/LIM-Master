@@ -1,0 +1,7 @@
+/* -------------------------------
+datatable selected row color
+---------------------------------*/
+:root {
+--dt-row-selected-text: 0, 0, 0;
+--dt-row-selected: 118,238,198;
+}

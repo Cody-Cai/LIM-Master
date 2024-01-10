@@ -1,0 +1,50 @@
+{% load i18n widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{{ request.path }}" class="modal-content shadow-none" style="max-height: 100%; height: 100%;">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;
+    {% if object %} {% translate 'Edit Permission' %} {% else %} {% translate 'Add Permission' %} {% endif %} </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+      <!--Any flash messages pop up in any page because this is the base template-->
+  {% if form.errors %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <div id="form_errors">
+            {% for key, value in form.errors.items %}
+              {{ value }}
+            {% endfor %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+  <div class="offcanvas-body">
+    <div class="mb-3">
+      <label for="{{ form.codename.id_for_label }}" class="form-label">{% translate 'Code Name' %}</label>
+      {% render_field form.codename class="form-control" %}
+      <div>{{ form.codename.errors }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.name.id_for_label }}" class="form-label">{% translate 'Name' %}</label>
+      {% render_field form.name class="form-control" %}
+      <div class="invalid-feedback">{{ form.name.errors|first }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.content_type.id_for_label }}" class="form-label">{% translate 'Content Type' %}</label>
+      {% render_field form.content_type class="form-control single-select-field" autocomplete="off" %}
+      <div class="invalid-feedback">{{ form.content_type.errors|first }}</div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end border-top p-2 align-items-center">
+    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">{% translate 'Cancel' %}</button>
+    <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>
+  </div>
+</form>
+{% endwith %}
+<script>
+  $( '.single-select-field' ).select2( {
+    theme: "bootstrap-5",
+    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+    placeholder: $( this ).data( 'placeholder' ),
+    dropdownParent: $('#offcanvas')
+  } );
+</script>

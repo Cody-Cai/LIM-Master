@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from .forms import LoginForm, SignUpForm, UserCreateForm, UpdateUserForm, UpdateProfileForm, UserForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -136,7 +136,7 @@ class ChangePasswordView(SuccessMessageMixin, PermissionRequiredMixin, PasswordC
     permission_required = "authentication.change_password"
 
     def form_valid(self, form):       
-        response = super().form_valid(form)
+        super().form_valid(form)
         return HttpResponse(
             status=204,
             headers={
@@ -163,6 +163,7 @@ class SetPasswordView(PermissionRequiredMixin, View):
 
         if form.is_valid():
             form.save()
+            update_session_auth_hash(request, form.user)
             username = user.get_username()
             return HttpResponse(
                 status=204,
@@ -226,7 +227,7 @@ class UserPermissionsView(PermissionRequiredMixin, UpdateView):
     fields = ['username','groups','user_permissions']
     template_name = "accounts/user_permissions.html"
     success_url = reverse_lazy('users')
-    permission_required = "authentication.view_permission"
+    permission_required = "auth.view_permission"
 
     def form_valid(self, form):       
         response = super().form_valid(form)
@@ -235,7 +236,7 @@ class UserPermissionsView(PermissionRequiredMixin, UpdateView):
 
 
 class GroupList_Json(PermissionRequiredMixin, View):
-    permission_required = "authentication.view_group"
+    permission_required = "auth.view_group"
 
     def get(self, reqeust):
         fields = ['id','name','description']
@@ -246,7 +247,7 @@ class GroupList_Json(PermissionRequiredMixin, View):
 class GroupListView(PermissionRequiredMixin, generic.ListView):
     model = Group
     template_name = "accounts/group_list.html"
-    permission_required = "authentication.view_group"
+    permission_required = "auth.view_group"
 
 
 class GroupCreateView(PermissionRequiredMixin, CreateView):
@@ -254,7 +255,7 @@ class GroupCreateView(PermissionRequiredMixin, CreateView):
     fields = '__all__'
     template_name = "accounts/group_form.html"
     success_url = reverse_lazy('group-create')
-    permission_required = "authentication.add_group"
+    permission_required = "auth.add_group"
 
     def form_valid(self, form):
         super().form_valid(form)
@@ -274,7 +275,7 @@ class GroupUpdateView(PermissionRequiredMixin, UpdateView):
     fields = ['name','description']
     template_name = "accounts/group_form.html"
     success_url = reverse_lazy('group')
-    permission_required = "authentication.change_group"
+    permission_required = "auth.change_group"
 
     def form_valid(self, form):
         super().form_valid(form)
@@ -293,7 +294,7 @@ class GroupDeleteView(PermissionRequiredMixin, DeleteView):
     model = Group
     template_name = "accounts/group_delete.html"
     success_url = reverse_lazy('group')
-    permission_required = "authentication.delete_group"
+    permission_required = "auth.delete_group"
     
     def form_valid(self, form):
         super().form_valid(form)

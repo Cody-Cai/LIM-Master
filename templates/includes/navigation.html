@@ -6,12 +6,15 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
+      {% for menu in menu_nav %}
+      {% if not menu.permission or menu.menu_perms in perms %}
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{% url 'pages' %}" class="nav-link">{% translate 'Home' %}</a>
+        {% firstof menu.url '#' as the_url %}
+        {% if the_url != '#' %}{% url menu.url as the_url %}{% endif %} 
+        <a href="{% if request.path == the_url %}{% url menu_home.url %}{% else %}#{% endif %}" class="nav-link {% if request.path == the_url %}active{% endif %}" onClick="gethome('{{ the_url }}')">{{ menu.menutxt }}</a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">{% translate 'Contact' %}</a>
-      </li>
+      {% endif %}
+      {% endfor %}
     </ul>
 
     <!-- Right navbar links -->
@@ -134,7 +137,7 @@
             <img src="{{ user.profile.avatar.url }}" class="img-circle elevation-2" alt="User Image">
 
             <p>
-              Alexander Pierce - Web Developer
+              {{ user.get_full_name }} - Web Developer
               <small>Member since Nov. 2012</small>
             </p>
           </li>

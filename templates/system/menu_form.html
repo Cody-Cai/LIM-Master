@@ -1,0 +1,76 @@
+{% load i18n widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{{ request.path }}" class="modal-content shadow-none" style="max-height: 100%; height: 100%;">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;
+    {% if object %} {% translate 'Edit Menu' %} {% else %} {% translate 'Add Menu' %} {% endif %} </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+   {% if form.errors %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <div id="form_errors">
+            {% for key, value in form.errors.items %}
+                {{ value }}
+            {% endfor %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+  
+  <div class="offcanvas-body">
+    <div class="mb-3">
+      <label for="{{ form.name.id_for_label }}" class="form-label">{% translate 'Name' %}</label>
+      {% render_field form.name class="form-control" %}
+      <div class="invalid-feedback">{{ form.name.errors|first }}</div>
+    </div>
+    <label for="{{ form.parent.id_for_label }}" class="form-label">{% translate 'Parent Menu' %}</label>
+    <div class="mb-3">
+      {% render_field form.parent class="form-control single-select-field" %}
+      <div class="invalid-feedback">{{ form.parent.errors|first }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.url.id_for_label }}" class="form-label">{% translate 'URL' %}</label>
+      {% render_field form.url|remove_attr:"required" class="form-control" autocomplete="off" %}
+      <div class="invalid-feedback">{{ form.url.errors|first }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.icon.id_for_label }}" class="form-label">{% translate 'Icon' %}</label>
+      {% render_field form.icon class="form-control" %}
+      <div class="invalid-feedback">{{ form.icon.errors|first }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.menutype.id_for_label }}" class="form-label">{% translate 'Menu Type' %}</label>
+      {% render_field form.menutype class="form-control" %}
+      <div class="invalid-feedback">{{ form.menutype.errors|first }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.permission.id_for_label }}" class="form-label">{% translate 'Permission' %}</label>
+      {% render_field form.permission class="form-control single-select-field" %}
+      <div class="invalid-feedback">{{ form.permission.errors|first }}</div>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.seq.id_for_label }}" class="form-label">{% translate 'Order Number' %}</label>
+      {% render_field form.seq class="form-control" %}
+      <div class="invalid-feedback">{{ form.seq.errors|first }}</div>
+    </div>
+     <div class="mb-3 form-check form-switch">
+      {% render_field form.is_home class="form-check-input" role="switch" %}
+      <label for="{{ form.is_home.id_for_label }}" class="form-label">{% translate 'Home' %}</label >
+      <div class="invalid-feedback">{{ form.is_home.errors|first }}</div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end border-top p-2 align-items-center">
+    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">{% translate 'Cancel' %}</button>
+    <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>
+  </div>
+</form>
+{% endwith %}
+<script>
+  $( '.single-select-field' ).select2( {
+    theme: "bootstrap-5",
+    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+    placeholder: $( this ).data( 'placeholder' ),
+    dropdownParent: $('#offcanvas')
+  } );
+
+</script>

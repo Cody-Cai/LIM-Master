@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
   <!-- overlayScrollbars -->
   <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
+  <!-- datatable selected rows -->
+  <link rel="stylesheet" href="{% static 'dist/css/style.css' %}">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -43,23 +45,23 @@
       <div class="container-fluid">
         <div class="card">
         <div class="card-header">
-          {% if perms.authentication.add_group %}
+          {% if perms.auth.add_group %}
           <a hx-get="{% url 'group-create' %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
           data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
             <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
           </a>
           {% endif %}
-          {% if perms.authentication.change_group %}
+          {% if perms.auth.change_group %}
           <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
             <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
           </button>
           {% endif %}
-          {% if perms.authentication.delete_group %}
+          {% if perms.auth.delete_group %}
           <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
             <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
           </button>
           {% endif %}
-          {% if perms.authentication.change_permission %}
+          {% if perms.auth.change_permission %}
           <button type="button" id="setPermissions" class="btn btn-outline-primary btn-sm float-end" style="margin-right: 3px;" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Permissions' %} disabled>
             <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
           </button>
