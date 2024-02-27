@@ -11,7 +11,7 @@ $(document).ready(function(){
 			});
 		} else{
 			checkbox.each(function(){
-				this.checked = false;                        
+				this.checked = false;             
 			});
 		} 
 	});

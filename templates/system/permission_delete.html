@@ -1,12 +1,12 @@
 {% load i18n %}
 <form hx-post="{{ request.path }}" class="modal-content">
   <div class="modal-header">
-    <h5 class="modal-title"><i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete Menu' %}</h5>
+    <h5 class="modal-title"><i class="fa-solid fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete Permission' %}</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
-     <p class="delete-text">{% translate 'Are you sure you want to delete this Menu ' %}
-      <strong>{{ menu }}</strong>?</p>
+     <p class="delete-text">{% translate 'Are you sure you want to delete this permission ' %}
+      <strong>{{ permission }}</strong>?</p>
   </div>
   <div class="modal-footer flex-nowrap p-0">
     <button type="submit" class="btn btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end">{% translate 'Confirm' %}</button>

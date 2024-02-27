@@ -12,10 +12,15 @@ from django.utils.translation import get_language_info
 from django.core.exceptions import ValidationError
 from django.core import serializers
 from django.contrib.auth.models import Permission
+from django.contrib import messages
+from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
+from django.utils import timezone
 
 # Create your views here.
 import datetime
 import json
+import zoneinfo
 
 User = get_user_model()
 
@@ -54,8 +59,15 @@ class IndexView(LoginRequiredMixin, View):
 
 class starterView(LoginRequiredMixin, View):
     def get(self, request):
-        #print(request.path_info)
-        #print(reverse('system:starter'))
+        #sessions = Session.objects.iterator() # also works with Session.objects.get_queryset()
+        sessions = Session.objects.filter(expire_date__gte=timezone.now())
+        for session in sessions: # iterate over sessions
+            data = session.get_decoded() # decode the session data
+            data["session_key"] = session.session_key
+            data["expire_date"] = session.expire_date # normally the data doesn't include the session key, so add it
+            #print(data)
+
+        #print(request.session.get("django_timezone"))
         match  = resolve(request.path_info)
         # print(match.url_name)
         # print(match.app_name)
@@ -76,6 +88,17 @@ class LanguageListView(PermissionRequiredMixin, generic.ListView):
     model = Language
     template_name = "system/language_list.html"
     permission_required = "system.view_language"
+
+    def get_context_data(self, **kwargs):
+        # for key, value in self.request.session.items():
+        #     print('{} => {}'.format(key, value))
+
+        # Call the base implementation first to get the context
+        context = super(LanguageListView, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        #context['some_data'] = self.request.session.get('_auth_user_backend','default')
+        context['some_data'] = self.request.META.get("REMOTE_ADDR")
+        return context
 
 
 class Language_Json(PermissionRequiredMixin, View):
@@ -153,6 +176,8 @@ class LanguageDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = "system.delete_language"
     
     def form_valid(self, form):
+        # s = SessionStore(session_key="ipzwklmuvacwufbgyrojfml0k5elve1e")
+        # s.delete()
         super().form_valid(form)
         msg = _("Language %(name)s deleted") % {"name": self.object}
         return HttpResponse(
@@ -178,6 +203,7 @@ class MenuList_Json(PermissionRequiredMixin, View):
     def get(self, reqeust):
         menu = Menu.objects.all()
         fields = ['id', 'icon', 'is_home', 'menutype', 'name', 'parent', 'parent__name','permission__codename', 'seq', 'url']
+        #print(Menu.objects.values(*fields))
         ret = dict(data=list(Menu.objects.values(*fields)))
         return JsonResponse(ret)
 
@@ -243,7 +269,6 @@ class MenuDeleteView(PermissionRequiredMixin, DeleteView):
             })
 
 
-
 from .forms import MenuLangNameFormset
 def manage_menulangname(request, pk):
     # author = get_object_or_404(Author, pk=pk)
@@ -269,25 +294,6 @@ def manage_menulangname(request, pk):
         formset = MenuLangNameFormset(instance=menu)
 
     return render(request, 'system/manage_menutext.html', {
-        'formset': formset, 
-        'menu': menu,})
-
-from django.forms import inlineformset_factory
-# Just for test
-def manage_books(request, pk):
-    # author = get_object_or_404(Author, pk=pk)
-    menu = Menu.objects.get(pk=pk)
-    BookInlineFormSet = inlineformset_factory(Menu, MenuLangName, fields=("lang", "name"), extra=1, can_delete=True)
-    if request.method == "POST":
-        formset = BookInlineFormSet(request.POST, request.FILES, instance=menu)
-        if formset.is_valid():
-            formset.save()
-            # Do something. Should generally end with a redirect. For example:
-            return HttpResponseRedirect(reverse_lazy('system:menu'))
-    else:
-        formset = BookInlineFormSet(instance=menu)
-
-    return render(request, 'system/manage_menulangname_copy.html',{
         'formset': formset, 
         'menu': menu,})
 
@@ -365,3 +371,116 @@ class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
                     "showMessage": f'{msg}'
                 })
             })
+    
+
+class SessionListView(PermissionRequiredMixin, generic.ListView):
+    model = Session
+    template_name = "system/session_list.html"
+    permission_required = "sessions.view_session"
+
+
+class SessionList_Json(PermissionRequiredMixin, View):
+    permission_required = "sessions.view_session"
+
+    def get(self, reqeust): 
+        local_tz = zoneinfo.ZoneInfo('Asia/Shanghai')
+        session_json = []
+        sessions = Session.objects.filter(expire_date__gte=timezone.now())
+        #print(sessions)
+        for session in sessions: # iterate over sessions
+            session_data = session.get_decoded() # decode the session data
+            #print(session_data)
+            session_data["session_key"] = session.session_key # normally the data doesn't include the session key, so add it
+            expiredate = session.expire_date
+            session_data["expire_date"] = expiredate.astimezone(local_tz)
+            if 'user_name' not in session_data:
+                session_data["user_name"] = 'None'
+            if 'login_dt' not in session_data:
+                session_data["login_dt"] = 'None'
+            if 'ip_add' not in session_data:
+                session_data["ip_add"] = 'None'
+            if 'city' not in session_data:
+                session_data["city"] = 'None'
+            if 'country' not in session_data:
+                session_data["country"] = 'None'
+            session_data["select"] = 'selection'
+            session_json.append(session_data)
+        
+        #print(session_json)
+        response = {'data': session_json}
+        return JsonResponse(response)
+
+
+class SessionDeleteView(PermissionRequiredMixin, DeleteView):
+    model = Session
+    template_name = "system/session_delete.html"
+    success_url = reverse_lazy('system:session')
+    permission_required = "sessions.delete_session"
+    
+    def form_valid(self, form):
+        # s = SessionStore(session_key="ipzwklmuvacwufbgyrojfml0k5elve1e")
+        # s.delete()
+        #print(self.object.pk)
+        msg = _("Session %(name)s deleted") % {"name": self.object.pk}
+        super().form_valid(form)
+        #msg = 'Session Deleted!'
+        #msg = _("Session %(name)s deleted") % {"name": self.object}
+        return HttpResponse(
+            status=204,
+            headers={
+                'HX-Trigger': json.dumps({
+                    "reloadTable": None,
+                    "showMessage": f'{msg}'
+                })
+            })
+
+# not use
+def delete_session(request):
+    if request.method == "POST":
+        idlist = request.POST.getlist("selection")
+        #print(request)
+        #print(idlist)
+        Session.objects.filter(session_key__in=id_list).delete()
+        return HttpResponse(
+        status=204,
+        headers={
+            'HX-Trigger': json.dumps({
+                "reloadTable": None,
+                "showMessage": f"{id_list} deleted."
+            })
+        })
+    else:
+        idlist = request.GET.getlist("selection")
+        #print(idlist)
+
+    return render(request, 'system/session_delete_confirm.html', {
+        'ids': idlist,
+    })
+
+
+class delete_SessionView(PermissionRequiredMixin, View):
+    template_name = 'system/session_delete_confirm.html'
+    permission_required = "sessions.delete_session"
+
+    def get(self, request, *args, **kwargs):
+        idlist = list(map(str,kwargs["pks"].split(',')))
+        #print(request.GET.getList(['selection']))
+        # selected_products = request.GET.getlist("selection")
+        # print(selected_products)
+        #print(idlist)
+        return render(request, self.template_name, {'ids': idlist})
+
+    def post(self, request, *args, **kwargs):
+        idlist = list(map(str,kwargs["pks"].split(',')))
+        session = Session.objects.filter(session_key__in=idlist).delete()
+        #print(session)
+        return HttpResponse(
+        status=204,
+        headers={
+            'HX-Trigger': json.dumps({
+                "reloadTable": None,
+                "showMessage": f"{idlist} deleted."
+            })
+        })
+
+        #return render(request, self.template_name, {'ids': idlist})

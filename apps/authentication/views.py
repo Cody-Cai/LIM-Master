@@ -15,6 +15,8 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .models import User, Profile
 from django.utils.translation import gettext, gettext_lazy as _
 from django.utils.text import format_lazy
+from django.contrib.gis.geoip2 import GeoIP2
+from datetime import datetime
 
 import json
 
@@ -26,7 +28,24 @@ class CustomLoginView(LoginView):
     authentication_form=LoginForm
 
     def form_valid(self, form):
+        g = GeoIP2()
         remember_me = form.cleaned_data.get('remember_me')
+        username = form.cleaned_data.get('username')
+        self.request.session['user_name'] = username
+        login_datetime = datetime.now()
+        #print(login_datetime)
+        self.request.session['login_dt'] = login_datetime.strftime('%Y-%m-%d %H:%M:%S')
+        ip_add = self.request.META.get("REMOTE_ADDR")
+        #ip_add = "205.186.163.125"
+        self.request.session['ip_add'] = ip_add
+        try:
+            res = g.city(ip_add)
+            self.request.session['city'] = res['city']
+            self.request.session['country'] = "(%s) %s" % (res['country_code'],res['country_name'])
+        except:
+            self.request.session['city'] = "None"
+            self.request.session['country'] = "None"
+
         if not remember_me:
             # set session expiry to 0 seconds. So it will automatically close the session after the browser is closed.
             self.request.session.set_expiry(0)
@@ -312,7 +331,8 @@ class GroupDeleteView(PermissionRequiredMixin, DeleteView):
 def testView(request):
     User = get_user_model()
     fullname = User.get_full_name(request.user)
-    return render(request, 'accounts/test2.html', {'fullname': fullname} )
+    #return render(request, 'accounts/test2.html', {'fullname': fullname} )
+    return render(request, 'system/testDatatable.html')
 
 
 class GroupPermissionsView(PermissionRequiredMixin, UpdateView):

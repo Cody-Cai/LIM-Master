@@ -1,19 +1,13 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/base-datatable.html" %}
 {% load i18n %}
 {% load static %}
 
 {% block stylesheets %}
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-colreorder/css/colReorder.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-select/css/select.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/select2/css/select2.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css' %}">
   <!-- overlayScrollbars -->
   <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
   <!-- datatable selected rows -->
-  <link rel="stylesheet" href="{% static 'dist/css/style.css' %}">
-
 {% endblock stylesheets %}
 
 {% block content %}
@@ -63,7 +57,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <table id="tableList" class="table table-sm table-bordered table-striped table-hover display" style="width:100%">
+            <table id="tableList" class="table table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
                     <th>{% translate 'Content Type' %}</th>
@@ -91,15 +85,6 @@
 {% endblock content %}  
 
 {% block javascripts %}
-<script src="{% static 'dist/plugins/datatables/jquery.datatables.min.js' %}"></script>
-<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>-->
-<script src="{% static 'dist/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
-<!--<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>-->
-<script src="{% static 'dist/plugins/datatables-colreorder/js/dataTables.colReorder_v17.min.js' %}"></script>
-<script src="{% static 'dist/plugins/datatables-select/js/dataTables.select_v1.7.min.js' %}"></script>
-<script src="{% static 'dist/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static "dist/js/offcanvas.js" %}"></script>
-<script src="{% static "dist/js/modal.js" %}"></script>
 <script src="{% static 'dist/plugins/select2/js/select2.full.min.js' %}"></script>
 <script src="{% static 'dist/plugins/select2/js/select2.min.js' %}"></script>
 <script>

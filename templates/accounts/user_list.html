@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/base-datatable.html" %}
 {% load i18n %}
 {% load static %}
 
@@ -6,15 +6,13 @@
 
 {% block stylesheets %}
   <!-- Bootstrap 5 style -->
-  <link rel="stylesheet" href="{% static 'dist/plugins/bootstrap5/css/bootstrap.min.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'dist/plugins/bootstrap5/css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables-colreorder/css/colReorder.bootstrap5.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables-select/css/select.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">-->
   <!-- overlayScrollbars -->
   <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
-  <!-- datatable selected rows -->
-  <link rel="stylesheet" href="{% static 'dist/css/style.css' %}">
 {% endblock stylesheets %}
 
 <!-- Element injected in the BODY element -->
@@ -46,45 +44,45 @@
     <section class="content">
       <div class="container-fluid">
         <div class="card">
-        <div class="card-header">
-          {% if perms.authentication.add_user %}
-          <a hx-get="{% url 'user-create' %}" accesskey="A" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
-          data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
-            <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
-          </a>
-          {% endif %}
-          {% if perms.authentication.change_user %}
-          <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
-            <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
-          </button>
-          {% endif %}
-          {% if perms.authentication.delete_user %}
-          <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
-            <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
-          </button>
-          {% endif %}
-          {% if perms.authentication.set_password %}
-          <button type="button" id="btnSetPwd" class="btn btn-outline-primary btn-sm float-end" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Reset password' %} disabled>
-            <i class="fa-solid fa-key"></i>&nbsp;&nbsp;{% translate 'Password reset' %}
-          </button>
-          {% endif %}
-          {% if perms.auth.view_permission %}
-          <button type="button" id="setPermissions" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Set Permissions' %} disabled>
-            <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
-          </button>
-          {% endif %}
-          {% if perms.authentication.set_profile %}
-          <button type="button" id="btnSetProfile" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Profile' %} disabled>
-            <i class="fa-solid fa-gear"></i>&nbsp;&nbsp;{% translate 'Profile' %}
-          </button>
-          {% endif %}
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
-            <table id="userList" class="table table-sm table-bordered table-striped table-hover display" style="width:100%">
+          <div class="card-header">
+            {% if perms.authentication.add_user %}
+            <a hx-get="{% url 'user-create' %}" accesskey="A" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+            data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
+              <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+            </a>
+            {% endif %}
+            {% if perms.authentication.change_user %}
+            <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
+              <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
+            </button>
+            {% endif %}
+            {% if perms.authentication.delete_user %}
+            <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
+              <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+            </button>
+            {% endif %}
+            {% if perms.authentication.set_password %}
+            <button type="button" id="btnSetPwd" class="btn btn-outline-primary btn-sm float-end" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Reset password' %} disabled>
+              <i class="fa-solid fa-key"></i>&nbsp;&nbsp;{% translate 'Password reset' %}
+            </button>
+            {% endif %}
+            {% if perms.auth.view_permission %}
+            <button type="button" id="setPermissions" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Set Permissions' %} disabled>
+              <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
+            </button>
+            {% endif %}
+            {% if perms.authentication.set_profile %}
+            <button type="button" id="btnSetProfile" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Profile' %} disabled>
+              <i class="fa-solid fa-gear"></i>&nbsp;&nbsp;{% translate 'Profile' %}
+            </button>
+            {% endif %}
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table id="userList" class="table table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
-                      <th>{% translate 'Username' %}</th>
+                      <th>{% translate 'User Name' %}</th>
                       <th>{% translate 'Email address' %}</th>
                       <th>{% translate 'First name' %}</th>
                       <th>{% translate 'Last Name' %}</th>
@@ -93,6 +91,8 @@
                   </tr>
               </thead>
             </table>
+          </div><!-- /.card-body -->
+        </div><!-- /.card -->
       </div><!-- /.container-fluid -->
     </section>
 
@@ -114,19 +114,6 @@
 <!-- REQUIRED SCRIPTS -->
 
 {% block javascripts %}
-
-<script src="{% static 'dist/plugins/datatables/jquery.datatables.min.js' %}"></script>
-<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>-->
-<script src="{% static 'dist/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
-<!--<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>-->
-<script src="{% static 'dist/plugins/datatables-colreorder/js/dataTables.colReorder_v17.min.js' %}"></script>
-<script src="{% static 'dist/plugins/datatables-select/js/dataTables.select_v1.7.min.js' %}"></script>
-<script src="{% static 'dist/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<!-- overlayScrollbars -->
-<!--<script src="{% static 'dist/plugins/overlayScrollbars/js/jquery.overlayScrollbars_v2.min.js' %}"></script>-->
-<!-- components@1.9.5 -->
-<script src="{% static "dist/js/offcanvas.js" %}"></script>
-<script src="{% static "dist/js/modal.js" %}"></script>
 
 <script>
 $(document).ready(function(){
@@ -170,6 +157,7 @@ $(document).ready(function(){
         style: 'single'
     },
     colReorder: true,
+    fixedHeader: true,
     "initComplete": function( settings, json ) {
                   htmx.process('#userList');
     },

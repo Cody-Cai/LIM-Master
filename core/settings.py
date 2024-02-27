@@ -30,10 +30,10 @@ if not SECRET_KEY:
     SECRET_KEY = ''.join(random.choice( string.ascii_lowercase  ) for i in range( 32 ))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-# Render Deployment Code
-#DEBUG = os.environ.get('DEBUG',False)
 DEBUG = True
+# Render Deployment Code
+#DEBUG = os.environ.get('DEBUG')
+#print(DEBUG)
 
 # Assets Management
 ASSETS_ROOT = os.getenv('ASSETS_ROOT', 'static/dist') 
@@ -151,8 +151,8 @@ AUTH_PASSWORD_VALIDATORS = [
 #'en-us'
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-#TIME_ZONE = 'Asia/Shanghai'
+#TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -194,6 +194,11 @@ SAFE_URL = [r'^/$',
             '/admin/',
             '/ckeditor/',
             ]
+
+
+GEOIP_PATH = 'geolte/'
+
+SESSION_EXPIRE_AT_BROWS = True
 
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 

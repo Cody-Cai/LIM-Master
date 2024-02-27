@@ -1,0 +1,93 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/">
+  <link rel="icon" href="{% static 'favicon.ico" type="image/x-icon' %}">
+  <!-- ./wrapper -->
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{% static 'dist/plugins/fontawesome-free-v6/css/all.min.css' %}">
+  <!-- update existing v5 CSS to use v6 icons and assets -->
+  <link href="{% static 'dist/plugins/fontawesome-free-v6/css/v5-font-face.min.css' %}" rel="stylesheet" />
+  <!-- Theme style -->
+  {% comment %} <link rel="stylesheet" href="{% static 'dist/adminlte/css/adminlte.min.css' %}"> {% endcomment %}
+  <!-- Bootstrap 5 style -->
+  <link rel="stylesheet" href="{% static 'dist/plugins/bootstrap5/css/bootstrap.min.css' %}">
+  <!-- Datatable 2.0.0 -->
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables/DataTables-2.0.0/css/dataTables.bootstrap5.min.css' %}">
+  <!--<link rel="stylesheet" href="{% static 'dist/plugins/datatables/DataTables-2.0.0/css/dataTables.dataTables.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables/Select-2.0.0/css/select.dataTables.min.css' %}">-->
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables/Select-2.0.0/css/select.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables/ColReorder-2.0.0/css/colReorder.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables/Buttons-3.0.0/css/buttons.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables/FixedHeader-4.0.0/css/fixedHeader.bootstrap5.css' %}">
+  <title>
+    Django AdminLTE - {% block title %}{% endblock %}
+  </title> 
+
+  {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body class="hold-transition layout-fixed layout-top-nav sidebar-mini {% block body_class %}{% endblock body_class %}" data-panel-auto-height-mode="height">
+<div class="wrapper bg-body-tertiary">
+    <!--Any flash messages pop up in any page because this is the base template-->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible show ms-3 me-3" role="alert">{{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock content %}
+
+    <!-- Empty toast to show the message -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div id="toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div id="toast-body" class="toast-body"></div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<!-- jQuery -->
+<script src="{% static 'dist/plugins/jquery/jquery-3.7.1.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/adminlte/js/adminlte.min.js' %}"></script>
+<!-- Bootstrap 5 -->
+<script src="{% static 'dist/plugins/bootstrap5/js/bootstrap.bundle.min.js' %}"></script>
+<!-- Htmx@1.9.5 -->
+<script src="{% static 'dist/plugins/htmx/htmx.min.js' %}"></script>
+<!-- DataTable 2.0.0 -->
+<script src="{% static 'dist/plugins/datatables/DataTables-2.0.0/js/datatables.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/DataTables-2.0.0/js/datatables.bootstrap5.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/Select-2.0.0/js/dataTables.select.min.js' %}"></script> 
+<script src="{% static 'dist/plugins/datatables/Select-2.0.0/js/select.bootstrap5.min.js' %}"></script> 
+<script src="{% static 'dist/plugins/datatables/ColReorder-2.0.0/js/dataTables.colReorder.min.js' %}"></script> 
+<script src="{% static 'dist/plugins/datatables/ColReorder-2.0.0/js/colReorder.bootstrap5.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/FixedHeader-4.0.0/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/FixedHeader-4.0.0/js/fixedHeader.bootstrap5.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/Buttons-3.0.0/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/Buttons-3.0.0/js/buttons.bootstrap5.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables/Buttons-3.0.0/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static "dist/js/offcanvas.js" %}"></script>
+<script src="{% static "dist/js/modal.js" %}"></script>
+<script src="{% static 'dist/js/toast.js' %}"></script> 
+<script>
+  document.body.addEventListener('htmx:configRequest', (event) => {
+    event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  })
+</script>
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
+
+</body>
+</html>
+

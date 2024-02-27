@@ -1,0 +1,156 @@
+{% extends "layouts/base.html" %}
+{% load i18n tz %}
+{% load static %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-colreorder/css/colReorder.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-select/css/select.bootstrap5.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">
+  <!-- overlayScrollbars -->
+  <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
+  <!-- datatable selected rows -->
+  <link rel="stylesheet" href="{% static 'dist/css/style.css' %}">
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid px-3 py-2">
+        <div class="row">
+          <div class="col-sm-6 d-flex align-items-center">
+            <h4>{% translate 'Session List' %}</h4>
+          </div>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a class ="text-decoration-none">{% translate 'System' %}</a></li>
+                <li class="breadcrumb-item active">{% translate 'Session List' %}</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+        <div class="card-header">
+          {% if perms.sessions.add_session %}
+          <a hx-get="{% url 'system:language-create' %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+          data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
+            <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+          </a>
+          {% endif %}
+          {% if perms.sessions.delete_session %}
+          <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
+            <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+          </button>
+          <button type="button" id="btnrefresh" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Refresh' %} >
+            <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{% translate 'Refresh' %}
+          </button>
+          {% endif %}
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="SessionList" class="table table-sm table-bordered table-striped table-hover display" style="width:100%">
+              <thead>
+                  <tr>
+                    <th>{% translate 'User Id' %}</th>
+                    <th>{% translate 'User Name' %}</th>
+                    <th>{% translate 'Session Key' %}</th>
+                    <th>{% translate 'IP Address' %}</th>
+                    <th>{% translate 'City' %}</th>
+                    <th>{% translate 'Country' %}</th>
+                    <th>{% translate 'Login Date' %}</th>
+                    <th>{% translate 'Expire Date' %}</th>
+                  </tr>
+              </thead>
+            </table>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- /.content -->
+  </div>
+
+  <!-- Placeholder for the offcanvas -->
+  <div id="offcanvas" class="offcanvas offcanvas-end" aria-labelledby="offcanvasLabel" hx-target="this">
+  </div>
+
+  <!-- Placeholder for the modal -->
+  <div id="modal" class="modal">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+  </div>
+
+{% endblock content %}  
+
+{% block javascripts %}
+<script src="{% static 'dist/plugins/datatables/jquery.datatables.min.js' %}"></script>
+<!--<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>-->
+<script src="{% static 'dist/plugins/datatables-bs5/js/dataTables.bootstrap5.min.js' %}"></script>
+<!--<script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>-->
+<script src="{% static 'dist/plugins/datatables-colreorder/js/dataTables.colReorder_v17.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables-select/js/dataTables.select_v1.7.min.js' %}"></script>
+<script src="{% static 'dist/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static "dist/js/offcanvas.js" %}"></script>
+<script src="{% static "dist/js/modal.js" %}"></script>
+<script>
+$(document).ready(function(){    
+  table = new DataTable('#SessionList',{
+      ajax: "{% url 'system:session-json' %}",
+      columns: [
+          { data: '_auth_user_id' },
+          { data: 'user_name' },
+          { data: 'session_key' },
+          { data: 'ip_add' },
+          { data: 'city' },
+          { data: 'country' },
+          { data: 'login_dt' },
+          { data: 'expire_date' },
+      ],
+      rowId: 'session_key',
+      select: {
+          style: 'single'
+      },
+      colReorder: true,
+      "initComplete": function( settings, json ) {
+                    htmx.process('#SessionList');
+      },
+  });
+
+  table
+    .on('select', function (e, dt, type, indexes) {
+      $('#btnEdit,#btnDel').removeAttr("disabled");
+    })
+    .on('deselect', function (e, dt, type, indexes) {
+      $('#btnEdit,#btnDel').attr("disabled", "disabled");
+    });
+
+  document.body.addEventListener("reloadTable", function(evt){
+    table.ajax.reload(function() {
+        htmx.process('#SessionList');
+    }, false)
+  });
+  $("#btnDel").click(function () {    
+      var id = table.row({ selected: true }).id();
+      doDelete(id);
+  });
+  $("#btnrefresh").click(function () {    
+      table.ajax.reload();
+  });
+})
+</script>
+<script>
+function doDelete(id) {
+  //window.location.href = "{% url 'group-delete' 123 %}".replace(/123/, id.toString())
+    // issue a GET to /example and replace #offcanvas with the response
+  htmx.ajax('GET', "{% url 'system:session-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'});
+}
+</script>
+{% endblock javascripts %}
