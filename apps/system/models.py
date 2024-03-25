@@ -11,7 +11,7 @@ class Language(models.Model):
     description = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Description"))
 
     def __str__(self):
-        return self.code
+        return "(%s) %s" % (self.code,self.description)
 
     def display_name(self):
         li = get_language_info(self.code)

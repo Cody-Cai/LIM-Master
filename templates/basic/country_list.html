@@ -3,11 +3,9 @@
 {% load static %}
 
 {% block stylesheets %}
-  <link rel="stylesheet" href="{% static 'dist/plugins/select2/css/select2.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css' %}">
   <!-- overlayScrollbars -->
   <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
-  <!-- datatable selected rows -->
+
 {% endblock stylesheets %}
 
 {% block content %}
@@ -19,13 +17,13 @@
       <div class="container-fluid px-3 py-2">
         <div class="row">
           <div class="col-sm-6 d-flex align-items-center">
-            <h4>{% translate 'Permission List' %}</h4>
+            <h4>{% translate 'Country/Region List' %}</h4>
           </div>
           <div class="col-sm-6 d-flex justify-content-end">
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb mt-2">
-                <li class="breadcrumb-item"><a class ="text-decoration-none">{% translate 'System' %}</a></li>
-                <li class="breadcrumb-item active">{% translate 'Permission List' %}</li>
+                <li class="breadcrumb-item"><a class ="text-decoration-none">{% translate 'Basic' %}</a></li>
+                <li class="breadcrumb-item active">{% translate 'Country/Region List' %}</li>
               </ol>
             </nav>
           </div>
@@ -38,32 +36,34 @@
       <div class="container-fluid">
         <div class="card">
         <div class="card-header">
-          {% if perms.auth.add_Permission %}
-          <a hx-get="{% url 'system:permission-create' %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+          {% if perms.basic.add_countryregion %}
+          <a hx-get="{% url 'basic:country-create' %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
           data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
             <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
           </a>
           {% endif %}
-          {% if perms.authentication.change_group %}
+          {% if perms.basic.change_countryregion %}
           <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
             <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
           </button>
           {% endif %}
-          {% if perms.authentication.delete_group %}
+          {% if perms.basic.delete_countryregion %}
           <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
             <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+          </button>
+          <button type="button" id="btnrefresh" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Refresh' %} >
+            <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Refresh' %}
           </button>
           {% endif %}
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-            <table id="tableList" class="table table-sm table-striped table-bordered" style="width:100%">
+            <table id="DataList" class="table table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
-                    <th>{% translate 'Content Type' %}</th>
-                    <th>{% translate 'Model' %}</th>
-                    <th>{% translate 'Code Name' %}</th>
+                    <th>{% translate 'Country/Region' %}</th>
                     <th>{% translate 'Name' %}</th>
+                    <th>{% translate 'English Name' %}</th>
                   </tr>
               </thead>
             </table>
@@ -85,24 +85,14 @@
 {% endblock content %}  
 
 {% block javascripts %}
-<script src="{% static 'dist/plugins/select2/js/select2.full.min.js' %}"></script>
-<script src="{% static 'dist/plugins/select2/js/select2.min.js' %}"></script>
 <script>
 $(document).ready(function(){    
-  table = new DataTable('#tableList',{
-      ajax: "{% url 'system:permission-json' %}",
+  table = new DataTable('#DataList',{
+      ajax: "{% url 'basic:country-json' %}",
       columns: [
-          { data: 'content_type__app_label' },
-          { data: 'content_type__model' },
-          { data: 'codename' },
+          { data: 'code' },
           { data: 'name' },
-      ],
-      columnDefs: [
-        {
-            render: (data, type, row) => data + ' | ' + row.content_type__model,
-            targets: 0
-        },
-        { visible: false, targets: [1] }
+          { data: 'en_name' }
       ],
       rowId: 'id',
       select: {
@@ -110,10 +100,10 @@ $(document).ready(function(){
       },
       colReorder: true,
       "initComplete": function( settings, json ) {
-                    htmx.process('#tableList');
+                    htmx.process('#DataList');
       },
   });
-  
+
   table
     .on('select', function (e, dt, type, indexes) {
       $('#btnEdit,#btnDel').removeAttr("disabled");
@@ -124,7 +114,7 @@ $(document).ready(function(){
 
   document.body.addEventListener("reloadTable", function(evt){
     table.ajax.reload(function() {
-        htmx.process('#tableList');
+        htmx.process('#DataList');
     }, false)
   });
   
@@ -132,21 +122,24 @@ $(document).ready(function(){
       var id = table.row({ selected: true }).id();
       doUpdate(id);
   });
-  $("#btnDel").click(function () {
+  $("#btnDel").click(function () {    
       var id = table.row({ selected: true }).id();
       doDelete(id);
+  });
+  $("#btnrefresh").click(function () {    
+      table.ajax.reload();
   });
 })
 </script>
 <script>
 function doUpdate(id) {
     // issue a GET to /example and replace #offcanvas with the response
-  htmx.ajax('GET', "{% url 'system:permission-update' 123 %}".replace(/123/, id.toString()), {target:'#offcanvas', swap:'innerHTML'});
+  htmx.ajax('GET', "{% url 'basic:country-update' 123 %}".replace(/123/, id.toString()), {target:'#offcanvas', swap:'innerHTML'});
 }
 function doDelete(id) {
   //window.location.href = "{% url 'group-delete' 123 %}".replace(/123/, id.toString())
     // issue a GET to /example and replace #offcanvas with the response
-  htmx.ajax('GET', "{% url 'system:permission-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'});
+  htmx.ajax('GET', "{% url 'basic:country-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'});
 }
 </script>
 {% endblock javascripts %}

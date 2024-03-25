@@ -8,32 +8,20 @@
   <link rel="stylesheet" href="{% static 'dist/plugins/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css' %}">
   <!-- overlayScrollbars -->
   <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
-  <!-- datatable selected rows -->
+  <style>
+    thead input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+  </style>
 {% endblock stylesheets %}
 
 {% block content %}
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid px-3 py-2">
-        <div class="row">
-          <div class="col-sm-6 d-flex align-items-center">
-            <h4>{% translate 'Menu List' %}</h4>
-          </div>
-          <div class="col-sm-6 d-flex justify-content-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb mt-2">
-                <li class="breadcrumb-item"><a class ="text-decoration-none" href="#">{% translate 'System' %}</a></li>
-                <li class="breadcrumb-item active">{% translate 'Menu List' %}</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
-    
+    <!-- Content Header (Page header) -->    
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -59,16 +47,16 @@
         <!-- /.card-header -->
         <div class="card-body">
             <table id="MenuList" class="table table-striped table-bordered" style="width:100%">
-              <thead class="table-light">
+              <thead>
                   <tr>
-                    <th>{% translate 'name' %}</th>
-                    <th>{% translate 'parent' %}</th>
+                    <th>{% translate 'Name' %}</th>
+                    <th>{% translate 'Parent Name' %}</th>
                     <th>{% translate 'URL' %}</th>
-                    <th>{% translate 'icon' %}</th>
-                    <th>{% translate 'menutype' %}</th>
-                    <th>{% translate 'permission' %}</th>
-                    <th>{% translate 'seq' %}</th>
-                    <th>{% translate 'is_home' %}</th>
+                    <th>{% translate 'Icon' %}</th>
+                    <th>{% translate 'Menu Type' %}</th>
+                    <th>{% translate 'Permission' %}</th>
+                    <th>{% translate 'Seq' %}</th>
+                    <th>{% translate 'Home' %}</th>
                   </tr>
               </thead>
             </table>
@@ -100,7 +88,11 @@
 <script src="{% static "dist/js/jquery.formset.js" %}"></script>
 
 <script>
-$(document).ready(function(){    
+$(document).ready(function(){
+  $('#MenuList thead tr')
+  .clone(true)
+  .addClass('filters')
+  .appendTo('#MenuList thead');
   table = new DataTable('#MenuList',{
       ajax: "{% url 'system:menu-json' %}",
       columns: [
@@ -140,7 +132,7 @@ $(document).ready(function(){
               return data;
             } 
           },
-      ],
+        ],
       layout: {
         top1Start: {
             buttons: [
@@ -163,20 +155,48 @@ $(document).ready(function(){
             'colvis']
         }
       },
-      stateSave: true,
       order: [[6, 'desc']],
       rowId: 'id',
-      colReorder: true,
+      select: {
+          style: 'single'
+      },
       fixedHeader: true,
-      deferRender: true,
-      "initComplete": function( settings, json ) {
-                    htmx.process('#MenuList');
+      stateSave: true,
+      orderCellsTop: true,
+      initComplete: function () {
+        //htmx.process('#MenuList');
+        this.api()
+            .columns()
+            .every(function () {
+                let column = this;
+                let title = column.header().textContent;
+
+                // Create input element
+                let input = document.createElement('input');
+                input.placeholder = title;
+                column.header(1).replaceChildren(input);
+
+                // Restore state
+                var colSearch = column.search();
+                //alert(colSearch);
+                if ( colSearch ) {
+                  $( 'input',  column.header(1)).val( colSearch );
+                }
+
+                // Event listener for user input
+                input.addEventListener('keyup', () => {
+                    if (column.search() !== this.value) {
+                        column.search(input.value).draw();
+                    }
+                });
+            });
       },
       "drawCallback": function( settings ) {
         htmx.process('#MenuList');
       },
   });
 
+  
   table
   .on( "mouseenter", "tbody tr", function() {
     $("a", this).removeClass("d-none");
@@ -212,7 +232,9 @@ $(document).ready(function(){
 
   $("#btnDel").click(function () {    
       var id = table.row({ selected: true }).id();
-      doDelete(id);
+      //doDelete(id);
+      var sear = $( 'input', table.column( 1 ).header(1) ).val();
+      alert(sear);
   });
 })
 </script>

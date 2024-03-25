@@ -116,18 +116,6 @@ $(document).ready(function(){
       },
   });
 
-  new DataTable('#example', {
-    columnDefs: [
-        {
-            orderable: false,
-            render: DataTable.render.select(),
-            targets: 0
-        }
-    ],
-    select: true,
-    order: [[1, 'asc']]
-  });
-
   table
     .on('select', function (e, dt, type, indexes) {
       $('#btnEdit,#btnDel').removeAttr("disabled");

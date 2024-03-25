@@ -23,31 +23,36 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library 
                only support three cycle menu item -->
           {% for menu in menu_side %} 
-            {% if not menu.permission or menu.menu_perms in perms %}
+            <!-- One Menu -->
+            {% if not menu.permission or menu.menu_perms in perms %}  
               {% if menu.menu_set.count %}
                 <li class="nav-item">
                   <a href={% if menu.url %}"{% url menu.url %}"{% else %}"#"{% endif %} class="nav-link">
                     <i class="nav-icon {{ menu.icon }}"></i>
-                    <p>{{ menu.menutxt }}</p>
-                    <i class="right fas fa-angle-left"></i>
+                    <p>{{ menu.menutxt }}
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
                   </a>
                   <ul class="nav nav-treeview">
                   {% for item in menu.menu_set.all %}
+                    <!-- Two Menu -->
                     {% if not item.permission or item.menu_perms in perms %}
                       {% if item.menu_set.count %}
                         <li class="nav-item">
                           <a href="#" class="nav-link">
-                            <i class="nav-icon {{ menu.icon }}"></i>
-                            <p>{{ item.menutxt }}</p>
-                            <i class="right fas fa-angle-left"></i>
+                            <i class="nav-icon {{ item.icon }}"></i>
+                            <p>{{ item.menutxt }}
+                              <i class="right fas fa-angle-left"></i>
+                            </p>
                           </a>
                           <ul class="nav nav-treeview">
                           {% for item2 in item.menu_set.all %} 
+                            <!-- three Menu -->
                             {% if not item2.permission or item2.menu_perms in perms %}
                               <li class="nav-item">
                                 <a href={% if item2.url %}"{% url item2.url %}"{% else %}"#"{% endif %} class="nav-link">
