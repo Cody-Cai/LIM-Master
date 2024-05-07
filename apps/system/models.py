@@ -50,7 +50,7 @@ class Menu(models.Model):
 
     def __str__(self):
         if self.parent:
-            return f'{self.name}|{self.parent}'
+            return f'{self.parent}|{self.name}'
         else:
             return self.name
 

@@ -1,0 +1,94 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+       <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">AdminLTE 3</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- SidebarSearch Form -->
+      <div class="form-inline mt-2">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library 
+               only support three cycle menu item -->
+          {% for menu in menu_side %} 
+            <!-- One Menu -->
+            {% if not menu.permission or menu.menu_perms in perms %}  
+              {% if menu.menu_set.count %}
+                <li class="nav-item">
+                  <a href={% if menu.url %}"{% url menu.url %}"{% else %}"#"{% endif %} class="nav-link">
+                    <i class="nav-icon {{ menu.icon }}"></i>
+                    <p>{{ menu.menutxt }}
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                  {% for item in menu.menu_set.all %}
+                    <!-- Two Menu -->
+                    {% if not item.permission or item.menu_perms in perms %}
+                      {% if item.menu_set.count %}
+                        <li class="nav-item">
+                          <a href="#" class="nav-link">
+                            <i class="nav-icon {{ item.icon }}"></i>
+                            <p>{{ item.menutxt }}
+                              <i class="right fas fa-angle-left"></i>
+                            </p>
+                          </a>
+                          <ul class="nav nav-treeview">
+                          {% for item2 in item.menu_set.all %} 
+                            <!-- three Menu -->
+                            {% if not item2.permission or item2.menu_perms in perms %}
+                              <li class="nav-item">
+                                <a href={% if item2.url %}"{% url item2.url %}"{% else %}"#"{% endif %} class="nav-link">
+                                  <i class="nav-icon {{ item2.icon }}"></i>
+                                  <p>{{ item2.menutxt }}</p>
+                                </a>
+                              </li>
+                            {% endif %}
+                          {% endfor %}
+                          </ul>
+                        </li>
+                      {% else %}
+                        <li class="nav-item">
+                          <a href={% if item.url %}"{% url item.url %}"{% else %}"#"{% endif %} class="nav-link">
+                            <i class="nav-icon {{ item.icon }}"></i>
+                            <p>{{ item.menutxt }}</p>
+                          </a>
+                        </li>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+                  </ul>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a href={% if menu.url %}"{% url menu.url %}"{% else %}"#"{% endif %} class="nav-link">
+                    <i class="nav-icon {{ menu.icon }}"></i>
+                    <p>{{ menu.menutxt }}</p>
+                  </a>
+                </li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

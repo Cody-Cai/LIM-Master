@@ -1,0 +1,138 @@
+{% load i18n widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+<form hx-post="{{ request.path }}" id="details-form" class="needs-validation" novalidate> 
+  <div class="tab-pane fade overflow-y-auto" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0" style="height: 400px;">
+    <fieldset>
+      <legend>{% translate 'Identification' %}</legend>
+      <div class="mb-3">
+        <label for="{{ form.emplid.id_for_label }}" class="form-label">{% translate 'Employee' %}</label>
+        {% render_field form.emplid class="form-control" %}
+        <div class="invalid-feedback">{{ form.emplid.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.name.id_for_label }}" class="form-label">{% translate 'Name' %}</label>
+        {% render_field form.name class="form-control" autocomplete="off" %}
+        <div class="invalid-feedback">{{ form.name.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.title.id_for_label }}" class="form-label">{% translate 'Title' %}</label>
+        {% render_field form.title|remove_attr:"required" class="form-control" autocomplete="off" %}
+        <div class="invalid-feedback">{{ form.title.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.orgnization_unit.id_for_label }}" class="form-label">{% translate 'Orgnization unit' %}</label>
+        {% render_field form.orgnization_unit|remove_attr:"required" class="form-control" %}
+        <div class="invalid-feedback">{{ form.orgnization_unit.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.status.id_for_label }}" class="form-label">{% translate 'Status' %}</label>
+        {% render_field form.status class="form-control" %}
+        <div class="invalid-feedback">{{ form.status.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.employee_type.id_for_label }}" class="form-label">{% translate 'Employee type' %}</label>
+        {% render_field form.employee_type class="form-control" %}
+        <div class="invalid-feedback">{{ form.employee_type.errors|first }}</div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{% translate 'Personal details' %}</legend>
+      <div class="mb-3">
+        <label for="{{ form.id_number.id_for_label }}" class="form-label">{% translate 'ID number' %}</label>
+        {% render_field form.id_number class="form-control" %}
+        <div class="invalid-feedback">{{ form.id_number.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.birthdate.id_for_label }}" class="form-label">{% translate 'Birth date' %}</label>
+        {% render_field form.birthdate class="form-control" type="date" %}
+        <div class="invalid-feedback">{{ form.birthdate.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.gender.id_for_label }}" class="form-label">{% translate 'Gender' %}</label>
+        {% render_field form.gender class="form-control" %}
+        <div class="invalid-feedback">{{ form.gender.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.education.id_for_label }}" class="form-label">{% translate 'Education' %}</label>
+        {% render_field form.education class="form-control" %}
+        <div class="invalid-feedback">{{ form.education.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.marital_status.id_for_label }}" class="form-label">{% translate 'Marital status' %}</label>
+        {% render_field form.marital_status class="form-control" %}
+        <div class="invalid-feedback">{{ form.marital_status.errors|first }}</div>
+      </div>
+    <fieldset>
+    <fieldset>
+      <legend>{% translate 'Employee dates' %}</legend>
+      <div class="mb-3">
+        <label for="{{ form.seniority_date.id_for_label }}" class="form-label">{% translate 'Seniority date' %}</label>
+        {% render_field form.seniority_date class="form-control" type="date" %}
+        <div class="invalid-feedback">{{ form.seniority_date.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.probation_date.id_for_label }}" class="form-label">{% translate 'Probation date' %}</label>
+        {% render_field form.probation_date class="form-control" type="date" %}
+        <div class="invalid-feedback">{{ form.probation_date.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.termination_date.id_for_label }}" class="form-label">{% translate 'Termination date' %}</label>
+        {% render_field form.termination_date class="form-control" type="date" %}
+        <div class="invalid-feedback">{{ form.termination_date.errors|first }}</div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="Contact-tab" tabindex="0">
+    <fieldset>
+      <legend>{% translate 'Contact information' %}</legend>
+      <div class="mb-3">
+        <label for="{{ form.phone.id_for_label }}" class="form-label">{% translate 'Phone' %}</label>
+        {% render_field form.phone class="form-control" type="tel" %}
+        <div class="invalid-feedback">{{ form.phone.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.email.id_for_label }}" class="form-label">{% translate 'Email' %}</label>
+        {% render_field form.email class="form-control" %}
+        <div class="invalid-feedback">{{ form.email.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.contact_address.id_for_label }}" class="form-label">{% translate 'Address' %}</label>
+        {% render_field form.contact_address class="form-control" %}
+        <div class="invalid-feedback">{{ form.contact_address.errors|first }}</div>
+      </div> 
+      <div class="mb-3">
+        <label for="{{ form.countryregion.id_for_label }}" class="form-label">{% translate 'Country/region' %}</label>
+        {% render_field form.countryregion class="form-control" %}
+        <div class="invalid-feedback">{{ form.countryregion.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.emergency_contact.id_for_label }}" class="form-label">{% translate 'emergency contact'|title %}</label>
+        {% render_field form.emergency_contact class="form-control" %}
+        <div class="invalid-feedback">{{ form.emergency_contact.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.emergency_number.id_for_label }}" class="form-label">{% translate 'emergency number'|title %}</label>
+        {% render_field form.emergency_number class="form-control" type="tel" %}
+        <div class="invalid-feedback">{{ form.emergency_number.errors|first }}</div>
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.notes.id_for_label }}" class="form-label">{% translate 'notes'|title %}</label>
+        {% render_field form.notes class="form-control" rows="5" %}
+        <div class="invalid-feedback">{{ form.notes.errors|first }}</div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="d-grid gap-2 d-md-flex justify-content-md-end p-2 d-none">
+      <button type="submit" class="btn btn-primary d-none" id="btnsubmit">{% translate 'Submit' %}</button>
+  </div>
+</form>
+{% endwith %}
+<script>
+// show form after page refreshed
+$(function() {
+  var activeTab = $(".nav-link.active").attr('data-bs-target');
+  //alert(activeTab);
+  $(".tab-pane").not(activeTab).addClass('d-none')
+  $(activeTab).addClass("show");
+})
+</script>

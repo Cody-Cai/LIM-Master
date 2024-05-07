@@ -48,6 +48,12 @@
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address-tab-pane" type="button" role="tab" aria-controls="address-tab-pane" aria-selected="false">{% translate 'Address' %}</button>
               </li>
+              <li class="nav-item">
+                <button class="nav-link" role="tab" aria-controls="currency-tab-pane" aria-selected="false" data-bs-toggle="tab" data-bs-target="#currency-tab-pane">Tab 3</button>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'basic:companyaddress-detail' 19 %}">Link</a>
+              </li>
             </ul>
           </div>
           <form method="post" enctype="multipart/form-data">
@@ -148,6 +154,9 @@
                   {% endfor %}
                   {% endif %}
                   </div>
+                </div>
+                <div class="tab-pane fade" id="currency-tab-pane" role="tabpanel" aria-labelledby="currency-tab" tabindex="0" hx-get="{% url 'basic:companyaddress-detail' 19 %}" hx-trigger="load">
+                  </div>
               </div>
             </div>
             <!-- /.card-body -->
@@ -180,13 +189,21 @@
 {% block javascripts %}
 <!-- components -->
 <script src="{% static "dist/js/modal.js" %}"></script>
+<script>
+  $(document).ready(function(){
+    //Check if have edit permission
+    {% if not perms.basic.add_companyinfo and not perms.basic.change_companyinfo %}
+      $( "form :input" ).attr("readonly", "readonly");
+      $( "select" ).attr("disabled", "disabled");
+    {% endif %}
+  });
+</script>
 
 <script>
   htmx.on("reloadpage", (e) => {
     location.reload();
   });
 </script>
-
 
 {% endblock javascripts %}
 {% endwith %}

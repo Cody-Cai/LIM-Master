@@ -1,0 +1,25 @@
+{% load static %}
+{% if not menu.permission or menu.menu_perms in perms %}  
+    {% if menu.menu_set.count %}
+    <li class="nav-item">
+        <a href={% if menu.url %}"{% url menu.url %}"{% else %}"#"{% endif %} class="nav-link">
+        <i class="nav-icon {{ menu.icon }}"></i>
+        <p>{{ menu.menutxt }}
+            <i class="right fas fa-angle-left"></i>
+        </p>
+        </a>
+        <ul class="nav nav-treeview">
+        {% for menu in menu.menu_set.all %}
+            {% include 'includes/siderbar_item.html' %}
+        {% endfor %}
+        </ul>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a href={% if menu.url %}"{% url menu.url %}"{% else %}"#"{% endif %} class="nav-link">
+        <i class="nav-icon {{ menu.icon }}"></i>
+        <p>{{ menu.menutxt }}</p>
+        </a>
+    </li>
+    {% endif %}
+{% endif %}

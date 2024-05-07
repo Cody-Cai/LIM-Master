@@ -25,6 +25,26 @@
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables/ColReorder-2.0.0/css/colReorder.bootstrap5.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables/Buttons-3.0.0/css/buttons.bootstrap5.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/plugins/datatables/FixedHeader-4.0.0/css/fixedHeader.bootstrap5.min.css' %}">
+  <!-- Custome CSS -->
+  <style>
+    body {
+      padding-top: 3rem;
+    }
+    
+    {% comment %} Custom CSS to decrease the navbar height {% endcomment %}
+    .navbar {
+      height: 40px;
+    }
+
+     {% comment %} Adjust the padding to center the content vertically within the smaller navbar {% endcomment %}
+    .navbar-brand,
+    .navbar-nav .nav-link {
+      padding-top: 0.25rem; 
+      padding-bottom: 0.25rem;
+      height: 100%;
+    }
+  </style>
+
   <title>
     Django AdminLTE - {% block title %}{% endblock %}
   </title> 
@@ -42,6 +62,8 @@
         </div>
         {% endfor %}
     {% endif %}
+
+    {% block navigation %}{% endblock navigation %}
 
     {% block content %}{% endblock content %}
 
@@ -80,6 +102,7 @@
 <script src="{% static "dist/js/offcanvas.js" %}"></script>
 <script src="{% static "dist/js/modal.js" %}"></script>
 <script src="{% static 'dist/js/toast.js' %}"></script> 
+<script src="{% static 'dist/js/script.js' %}"></script>
 <script>
   document.body.addEventListener('htmx:configRequest', (event) => {
     event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';

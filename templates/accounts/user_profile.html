@@ -2,7 +2,7 @@
 {% with WIDGET_ERROR_CLASS='is-invalid' %}
 <form hx-post="{{ request.path }}" class="modal-content" enctype="multipart/form-data">
   <div class="modal-header">
-    <h5 class="modal-title"><i class="fa-solid fa-gear"></i>&nbsp;&nbsp;{% translate 'User Profile' %}</h5>
+    <h5 class="modal-title"><i class="fa-solid fa-id-card-clip"></i>&nbsp;&nbsp;{% translate 'User Profile' %}</h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
   </div>
   <div class="modal-body">
@@ -11,14 +11,21 @@
                 src="{{ user.profile.avatar.url }}"
                 alt="User profile picture">
         </div>
-
         <h3 class="profile-username text-center">
             {{ user.username }}
         </h3>
         <hr>
         <div class="form-group">
-            <label class="small mb-1" for="{{ form.avatar.id_for_label }}">{% translate 'Change Avatar' %}:</label>
-                {{ form.avatar }}
+          <div class="mb-3">
+            <label for="{{ form.avatar.id_for_label }}" class="form-label">{% translate 'Change Avatar' %}</label>
+            {{ form.avatar }}
+            <div class="invalid-feedback">{{ form.avatar.errors|first }}</div>
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.employee.id_for_label }}" class="form-label">{% translate 'Employee' %}</label>
+            {{ form.employee }}
+            <div class="invalid-feedback">{{ form.employee.errors|first }}</div>
+          </div>
         </div> 
   </div>
   <div class="modal-footer">
@@ -26,3 +33,8 @@
   </div>
 </form>
 {% endwith %}
+<script>
+$( '#id_employee' ).select2( {
+    dropdownParent: $('#modal')
+  } );
+  </script>

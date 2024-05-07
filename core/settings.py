@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.authentication',
+    'apps.basic',
     'apps.home',
+    'apps.hrm',
     'apps.system',
 ]
 

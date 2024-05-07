@@ -2,12 +2,15 @@
 {% with WIDGET_ERROR_CLASS='is-invalid' %}
 <form hx-post="{{ request.path }}" class="modal-content shadow-none" style="max-height: 100%; height: 100%;">
   <div class="offcanvas-header border-bottom">
-    <h5 class="offcanvas-title"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;{% blocktranslate %}{{ form_name }}{% endblocktranslate %}</h5>
+    <h5 class="offcanvas-title"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;
+    {% translate 'User' as title %}
+    {% if object %} {% blocktranslate with object_t=object|title %} Edit {{ object_t }} {% endblocktranslate %} {% else %} {% blocktranslate %} Add {{ title }} {% endblocktranslate %} {% endif %} </h5>
+    </h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
       <!--Any flash messages pop up in any page because this is the base template-->
   {% if form.errors %}
-    <div class="alert alert-danger alert-dismissible" role="alert">
+    <div class="alert alert-danger alert-dismissible" role=a"lert">
         <div id="form_errors">
             {% for key, value in form.errors.items %}
                 {{ value }}

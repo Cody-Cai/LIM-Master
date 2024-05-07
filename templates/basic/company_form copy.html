@@ -1,0 +1,206 @@
+{% extends "layouts/base.html" %}
+{% load i18n static widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+{% block title %}{% translate 'Company Information' %}{% endblock %} 
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini {% endblock body_class %} 
+
+{% block content %}
+ 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid px-3 py-2">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>{% translate 'Company Information' %}</h2>
+          </div>
+          <div class="col-sm-6 d-flex justify-content-end">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mt-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">{% translate 'Home' %}</a></li>
+              <li class="breadcrumb-item active">{% translate 'Company Information' %}</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="companyTab" role="tablist" hx-target="#tab-contents">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general-tab-pane" type="button" role="tab" aria-controls="general-tab-pane" aria-selected="true">{% translate 'General' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">{% translate 'Contact' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address-tab-pane" type="button" role="tab" aria-controls="address-tab-pane" aria-selected="false">{% translate 'Address' %}</button>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="currency-tab" hx-get="{% url 'basic:currency' %}" data-bs-toggle="tab" hx-target="#htmxtab" role="tab" aria-controls="currency-tab-pane" aria-selected="false">Currency</a>
+              </li>
+            </ul>
+          </div>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card-body">
+              <div class="tab-content" id="companyTabContent">
+                <div class="tab-pane fade show active" id="general-tab-pane" role="tabpanel" aria-labelledby="general-tab" tabindex="0">
+                  <div class="row g-3 mb-2">
+                    <div class="col-12">                    
+                      <label for="{{ form.name.id_for_label }}" class="form-label">{% translate 'Name' %}</label>
+                        {% render_field form.name class="form-control" %}
+                      <div class="invalid-feedback">{{ form.name.errors|first }}</div>
+                    </div>
+                    <div class="col-12">
+                      <label for="{{ form.en_name.id_for_label }}" class="form-label">{% translate 'English Name' %}</label>
+                        {% render_field form.en_name class="form-control" %}
+                      <div class="invalid-feedback">{{ form.en_name.errors|first }}</div>
+                    </div>
+                    <div class="col-12">                    
+                      <label for="{{ form.address.id_for_label }}" class="form-label">{% translate 'Address' %}</label>
+                        {% render_field form.address class="form-control" %}
+                      <div class="invalid-feedback">{{ form.address.errors|first }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="{{ form.zipcode.id_for_label }}" class="form-label">{% translate 'Zip code' %}</label>
+                        {% render_field form.zipcode class="form-control" %}
+                      <div class="invalid-feedback">{{ form.zipcode.errors|first }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="{{ form.countryregion.id_for_label }}" class="form-label">{% translate 'Country/region' %}</label>
+                        {% render_field form.countryregion class="form-control" %}
+                      <div class="invalid-feedback">{{ form.countryregion.errors|first }}</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="{{ form.language.id_for_label }}" class="form-label">{% translate 'Default language' %}</label>
+                        {% render_field form.language class="form-control" %}
+                      <div class="invalid-feedback">{{ form.language.errors|first }}</div>
+                    </div>
+                    <div class="col-md-2">
+                      <label for="{{ form.currency.id_for_label }}" class="form-label">{% translate 'Currency' %}</label>
+                        {% render_field form.currency class="form-control" %}
+                      <div class="invalid-feedback">{{ form.currency.errors|first }}</div>
+                    </div>
+                    <div class="col-md-10">
+                      <label for="{{ form.taxnum.id_for_label }}" class="form-label">{% translate 'Tax number' %}</label>
+                        {% render_field form.taxnum class="form-control" %}
+                      <div class="invalid-feedback">{{ form.taxnum.errors|first }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label for="{{ form.telephone.id_for_label }}" class="form-label">{% translate 'Telephone' %}</label>
+                        {% render_field form.telephone class="form-control" %}
+                      <div class="invalid-feedback">{{ form.telephone.errors|first }}</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="{{ form.telephoneext.id_for_label }}" class="form-label">{% translate 'Extension' %}</label>
+                        {% render_field form.telephoneext class="form-control" %}
+                      <div class="invalid-feedback">{{ form.telephoneext.errors|first }}</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="{{ form.teleFax.id_for_label }}" class="form-label">{% translate 'TeleFax' %}</label>
+                        {% render_field form.teleFax class="form-control" %}
+                      <div class="invalid-feedback">{{ form.teleFax.errors|first }}</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="{{ form.mobilephone.id_for_label }}" class="form-label">{% translate 'Mobile phone' %}</label>
+                        {% render_field form.mobilephone class="form-control" %}
+                      <div class="invalid-feedback">{{ form.mobilephone.errors|first }}</div>
+                    </div>
+                    <div class="col-12">
+                      <label for="{{ form.email.id_for_label }}" class="form-label">{% translate 'Email' %}</label>
+                        {% render_field form.email class="form-control" %}
+                      <div class="invalid-feedback">{{ form.email.errors|first }}</div>
+                    </div>
+                    <div class="col-12">
+                      <label for="{{ form.url.id_for_label }}" class="form-label">{% translate 'Web site' %}</label>
+                        {% render_field form.url class="form-control" %}
+                      <div class="invalid-feedback">{{ form.url.errors|first }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="address-tab-pane" role="tabpanel" aria-labelledby="address-tab" tabindex="0">
+                  {% if perms.basic.add_companyaddress %}
+                  <div class="d-flex justify-content-end">
+                  <a hx-get="{% url 'basic:companyaddress-create' companyinfo.id %}" class="btn btn-primary btn-sm mb-2" hx-target="#comaddressform" hx-swap="beforebegin"
+                  data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
+                    <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+                  </a>
+                  </div>
+                  {% endif %}
+                  {% if perms.basic.view_companyaddress %}
+                  <div id="comaddressform">
+                  {% for comAdd in companyinfo.companyaddress_set.all %}
+                    {% include "basic/companyaddress_detail.html" %}
+                  {% endfor %}
+                  {% endif %}
+                  </div>
+                  <div class="tab-pane fade" id="currency-tab-pane" role="tabpanel" aria-labelledby="currency-tab" tabindex="0">
+                    <div id="htmxtab" hx-target="this"></div>
+                  </div>
+              </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+              {% if perms.basic.change_company %}
+              <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>
+              {% endif %}
+              <button type="reset" class="btn btn-dark">{% translate 'Reset' %}</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+
+  <!-- Placeholder for the modal -->
+  <!--<div id="modal" class="modal">-->
+  <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+  </div>
+
+
+{% endblock content %}  
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+{% block javascripts %}
+<!-- components -->
+<script src="{% static "dist/js/modal.js" %}"></script>
+<script>
+  $(document).ready(function(){
+    //Check if have edit permission
+    {% if not perms.basic.add_companyinfo and not perms.basic.change_companyinfo %}
+      $( "form :input" ).attr("readonly", "readonly");
+      $( "select" ).attr("disabled", "disabled");
+    {% endif %}
+  });
+</script>
+
+<script>
+  htmx.on("reloadpage", (e) => {
+    location.reload();
+  });
+</script>
+
+{% endblock javascripts %}
+{% endwith %}

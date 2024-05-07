@@ -199,9 +199,13 @@ class SetPasswordView(PermissionRequiredMixin, View):
 def profile(request):
     if request.method == 'POST':
         user_form = UpdateUserForm(request.POST, instance=request.user)
-        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        profile = get_object_or_404(Profile, user=request.user)
+        # get the init value
+        employee_post = profile.employee 
+        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=profile)
         #print(request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
+            profile_form.instance.employee = employee_post  # keep the init value
             user_form.save()
             profile_form.save()
             messages.success(request, _('Your profile is updated successfully'))

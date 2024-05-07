@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserCreationForm, AuthenticationForm
 from django import forms
-from django.forms import ModelForm, TextInput, HiddenInput
+from django.forms import ModelForm, TextInput, HiddenInput, FileInput, Select
 from .models import User, Profile
 from django.utils.translation import gettext_lazy as _
 
@@ -87,11 +87,15 @@ class UpdateUserForm(ModelForm):
         }
 
 class UpdateProfileForm(ModelForm):
-    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    #avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control','type':"file"}))
 
     class Meta:
         model = Profile
-        fields = ['avatar']
+        fields = ['avatar','employee']
+        widgets = {
+            "avatar": FileInput(attrs={'class': 'form-control','type':"file"}),
+            "employee": Select(attrs={'class': 'form-control'}),
+        }
 
 
 class UserCreateForm(UserCreationForm):

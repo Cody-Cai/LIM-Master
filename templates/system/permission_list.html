@@ -10,53 +10,53 @@
   <!-- datatable selected rows -->
 {% endblock stylesheets %}
 
-{% block content %}
+{% block navigation %}
+<nav class="navbar navbar-expand-sm fixed-top bg-light border shadow-sm rounded">
+  <div class="container-fluid">
+    <ul class="navbar-nav col-sm-6">
+      {% if perms.auth.add_Permission %}
+      <li class="nav-item">
+        <a hx-get="{% url 'system:permission-create' %}" class="btn btn-sm btn-light nav-link" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+        data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'New' %}>
+          <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+        </a>
+      </li>
+      {% endif %}
+      {% if perms.authentication.change_permission %}
+      <li class="nav-item">
+        <button type="button" id="btnEdit" class="btn btn-light  btn-sm nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Edit' %} disabled>
+          <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
+        </button>
+      </li>
+      {% endif %}
+      {% if perms.authentication.delete_permission %}
+      <li class="nav-item">
+        <button type="button" id="btnDel" class="btn btn-light btn-sm nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Delete' %} disabled>
+          <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+        </button>
+      </li>
+      {% endif %}
+    </ul>
+    <div class="col-sm-6 d-flex justify-content-end">
+      <button class="btn btn-primary btn-sm">Button</button>
+    </div>
+  </div>
+</nav>
+{% endblock navigation %}
 
+{% block content %}
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid px-3 py-2">
-        <div class="row">
-          <div class="col-sm-6 d-flex align-items-center">
-            <h4>{% translate 'Permission List' %}</h4>
-          </div>
-          <div class="col-sm-6 d-flex justify-content-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb mt-2">
-                <li class="breadcrumb-item"><a class ="text-decoration-none">{% translate 'System' %}</a></li>
-                <li class="breadcrumb-item active">{% translate 'Permission List' %}</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="card">
-        <div class="card-header">
-          {% if perms.auth.add_Permission %}
-          <a hx-get="{% url 'system:permission-create' %}" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
-          data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
-            <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
-          </a>
-          {% endif %}
-          {% if perms.authentication.change_group %}
-          <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
-            <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
-          </button>
-          {% endif %}
-          {% if perms.authentication.delete_group %}
-          <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
-            <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
-          </button>
-          {% endif %}
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">
+          <div class="card-header">
+            {% translate 'Permission' %}
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
             <table id="tableList" class="table table-sm table-striped table-bordered" style="width:100%">
               <thead>
                   <tr>
@@ -67,6 +67,8 @@
                   </tr>
               </thead>
             </table>
+          </div><!-- /.card-body -->
+        </div><!-- /.card -->
       </div><!-- /.container-fluid -->
     </section>
 

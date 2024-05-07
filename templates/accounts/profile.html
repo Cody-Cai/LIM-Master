@@ -1,5 +1,5 @@
 {% extends "layouts/base.html" %}
-{% load i18n static %}
+{% load i18n widget_tweaks %}
 
 {% block title %}{% translate 'User Profile' %}{% endblock %} 
 
@@ -86,9 +86,13 @@
                       {{ user_form.last_name }}
                   </div>
                   <div class="mb-3">
-                    <label class="small mb-1" for="{{ profile_form.avatar.id_for_label }}">{% translate 'Change Avatar' %}:</label>
+                    <label class="form-label" for="{{ profile_form.avatar.id_for_label }}">{% translate 'Change Avatar' %}</label>
                       {{ profile_form.avatar }}
-                  </div>                 
+                  </div> 
+                  <div class="mb-3">
+                    <label for="{{ profile_form.employee.id_for_label }}" class="form-label">{% translate 'Employee' %}</label>
+                      {{ profile_form.employee|attr:"disabled" }}
+                  </div>            
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
@@ -120,14 +124,9 @@
 <!-- REQUIRED SCRIPTS -->
 
 {% block javascripts %}
-<!-- components -->
-<script src="{% static "dist/js/modal.js" %}"></script>
-
 <script>
   htmx.on("reloadpage", (e) => {
     location.reload();
   });
 </script>
-
-
 {% endblock javascripts %}

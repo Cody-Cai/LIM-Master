@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('apps.home.urls')),
     path('system/', include('apps.system.urls')),
     path('basic/', include('apps.basic.urls')),
+    path('hrm/', include('apps.hrm.urls')),
     path("i18n/", include("django.conf.urls.i18n")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

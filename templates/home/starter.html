@@ -4,6 +4,7 @@
 {% block title %} Starter {% endblock %} 
 
 {% block stylesheets %}
+<link rel="stylesheet" href="{% static 'dist/adminlte/css/adminlte.min.css' %}">
 {% endblock stylesheets %}
 
 <!-- Element injected in the BODY element -->
@@ -46,20 +47,6 @@
                 <a href="#" class="card-link">Another link</a>
               </div>
             </div>
-
-            <div class="card card-primary card-outline">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up the bulk of the card's
-                  content.
-                  {{ user.get_all_permissions }}
-                </p>
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-              </div>
-            </div><!-- /.card -->
           </div>
           <!-- /.col-md-6 -->
           <div class="col-lg-6">
@@ -71,7 +58,8 @@
                 <h6 class="card-title">Special title treatment</h6>
 
                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="https://www.163.com" class="btn btn-primary">163</a>
+                <a href="{% url 'basic:company' %}" class="btn btn-primary">163</a>
+                <button onClick="opentab()">Open Tab</button>
               </div>
             </div>
 
@@ -109,4 +97,27 @@
 <script src="{% static 'dist/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/adminlte/js/adminlte.min.js' %}"></script>
+<script>
+  $('.btn-ifrMenu').click(function (e) {
+        e.preventDefault();
+        let Jq;
+        if(top.location!==self.location){
+            Jq = window.top.$; 
+        } else {
+            Jq = $;
+        }
+        let id = $(this).attr('href');
+        alert(id)
+        id = id.replace('./', '').replace(/["&'./:=?[\]]/gi, '-').replace(/(--)/gi, '');
+  
+        window.top.iFrameInstance.createTab('Home', $(this).attr('href'), id, true);
+    });
+    
+  function opentab(){
+    alert(window.top.iFrameInstance);
+    window.top.iFrameInstance.createTab('Home', 'https://www.163.com', 'index', true);
+    //$('.content-wrapper').IFrame('createTab', 'Home', 'https://www.163.com', 'index', true)
+    //$('.content-wrapper').IFrame('createTab', '163', "https://www.163.com", '163', true)
+  }
+  </script>
 {% endblock javascripts %}

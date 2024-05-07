@@ -1,0 +1,60 @@
+{% load i18n static widget_tweaks %}
+<form hx-post="{{ request.path }}" class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;{{ title|title }}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  {% if formset.errors %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+      {% for error_list in formset.errors %}
+      <ul class="errorlist list-unstyled">
+          {% for error in error_list.values %}
+            <li>{{ error }}</li>
+          {% endfor %}
+      </ul>
+      {% endfor %}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+  <div class="modal-body">
+     <h2 class="fs-5 mb-3">{% translate 'Name' %}:
+      <strong>{{ object }}</strong></h2>
+    {{formset.management_form}}
+    <table class="table table-light table-bordered" border="0" cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th>{% translate "Language" %}</th>
+          <th>{% translate "Text" %}</th>
+          <th>{% translate "Delete" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for form in formset %}
+        <tr class="link-formset" >
+        <td hidden="hidden">
+            {% if form.instance.pk %}{{ form.DELETE }}{% endif %}
+            {{ form.id }}
+        <td>{{ form.language | add_class:"form-control" }}</td>
+        <td>{{ form.unitid_txt | add_class:"form-control" }}</td>
+        <td></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer flex-nowrap p-0">
+    <button type="submit" class="btn btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end" >{% translate 'Confirm' %}</button>
+    <button type="button" class="btn btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal">
+      {% translate 'Cancel' %}
+    </button>
+  </div>
+</form>
+<script>
+   $(".link-formset").formset(
+    {
+      prefix: '{{ formset.prefix }}',
+      deleteText: "<div class='col btn btn-danger btn-circle'><i class='fas fa-trash'></i></div>",
+      addText: "<div class='btn btn-success btn-circle'><i class='fas fa-plus'></i></div>"
+    }
+   );
+</script>

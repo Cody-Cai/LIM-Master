@@ -5,77 +5,73 @@
 {% block title %} {% translate 'User List' %} {% endblock %} 
 
 {% block stylesheets %}
-  <!-- Bootstrap 5 style -->
-  <!-- <link rel="stylesheet" href="{% static 'dist/plugins/bootstrap5/css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-bs5/css/dataTables.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-colreorder/css/colReorder.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-select/css/select.bootstrap5.min.css' %}">
-  <link rel="stylesheet" href="{% static 'dist/plugins/datatables-buttons/css/buttons.bootstrap5.min.css' %}">-->
-  <!-- overlayScrollbars -->
-  <!--<link rel="stylesheet" href="{% static 'dist/plugins/overlayScrollbars/css/OverlayScrollbars_v2.min.css' %}">-->
+  <link rel="stylesheet" href="{% static 'dist/plugins/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'dist/plugins/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css' %}">
 {% endblock stylesheets %}
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} {% endblock body_class %} 
 
+{% block navigation %}
+<nav class="navbar navbar-expand-sm fixed-top bg-light border shadow-sm rounded">
+  <div class="container-fluid">
+    <ul class="navbar-nav col-sm-6">
+      {% if perms.authentication.add_user %}
+      <li class="nav-item">
+        <a hx-get="{% url 'user-create' %}" accesskey="N" class="btn btn-sm btn-light nav-link" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+        data-toggle="tooltip" data-bs-placement="bottom" data-bs-title= "New User (Alt+N)">
+          <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+        </a>
+      </li>
+      {% endif %}
+      {% if perms.authentication.change_user %}
+      <li class="nav-item">
+        <button type="button" id="btnEdit" class="btn btn-light  btn-sm nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Edit' %} disabled>
+          <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
+        </button>
+      </li>
+      {% endif %}
+      {% if perms.authentication.delete_user %}
+      <li class="nav-item">
+        <button type="button" id="btnDel" class="btn btn-light btn-sm nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Delete' %} disabled>
+          <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+        </button>
+      </li>
+      {% endif %}
+    </ul>
+    <div class="col-sm-6 d-flex justify-content-end">
+      <div class="btn-group" role="group" aria-label="related function">
+        {% if perms.auth.change_permission %}
+        <button type="button" id="setPermissions" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Permissions' %} disabled>
+          <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
+        </button>
+        {% endif %}
+        {% if perms.authentication.set_password %}
+        <button type="button" id="btnSetPwd" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Reset password' %} disabled>
+          <i class="fa-solid fa-key"></i>&nbsp;&nbsp;{% translate 'Reset password' %}
+        </button>
+        {% endif %}
+        {% if perms.authentication.set_profile %}
+        <button type="button" id="btnSetProfile" class="btn btn-sm btn-outline-secondary" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Profile' %} disabled>
+          <i class="fa-solid fa-id-card-clip"></i>&nbsp;&nbsp;{% translate 'Profile' %}
+        </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+{% endblock navigation %}
+
 {% block content %}
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid px-3 py-2">
-        <div class="row">
-          <div class="col-sm-6 d-flex align-items-center">
-            <h4>{% translate 'User List' %}</h4>
-          </div>
-          <div class="col-sm-6 d-flex justify-content-end">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb mt-2">
-                <li class="breadcrumb-item"><a class ="text-decoration-none" href="#">{% translate 'System' %}</a></li>
-                <li class="breadcrumb-item active">{% translate 'User List' %}</li>
-              </ol>
-            </nav>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="card">
           <div class="card-header">
-            {% if perms.authentication.add_user %}
-            <a hx-get="{% url 'user-create' %}" accesskey="A" class="btn btn-outline-primary btn-sm" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
-            data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'New' %}>
-              <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
-            </a>
-            {% endif %}
-            {% if perms.authentication.change_user %}
-            <button type="button" id="btnEdit" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Edit' %} disabled>
-              <i class="fa-solid fa-pen"></i>&nbsp;&nbsp;{% translate 'Edit' %}
-            </button>
-            {% endif %}
-            {% if perms.authentication.delete_user %}
-            <button type="button" id="btnDel" class="btn btn-outline-primary btn-sm" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Delete' %} disabled>
-              <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
-            </button>
-            {% endif %}
-            {% if perms.authentication.set_password %}
-            <button type="button" id="btnSetPwd" class="btn btn-outline-primary btn-sm float-end" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Reset password' %} disabled>
-              <i class="fa-solid fa-key"></i>&nbsp;&nbsp;{% translate 'Password reset' %}
-            </button>
-            {% endif %}
-            {% if perms.auth.view_permission %}
-            <button type="button" id="setPermissions" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Set Permissions' %} disabled>
-              <i class="fa-solid fa-shield-halved"></i>&nbsp;&nbsp;{% translate 'Permissions' %}
-            </button>
-            {% endif %}
-            {% if perms.authentication.set_profile %}
-            <button type="button" id="btnSetProfile" class="btn btn-outline-primary btn-sm float-end me-1" data-toggle="tooltip" data-bs-placement="top" data-bs-title={% translate 'Profile' %} disabled>
-              <i class="fa-solid fa-gear"></i>&nbsp;&nbsp;{% translate 'Profile' %}
-            </button>
-            {% endif %}
+            {% translate 'User' %}
           </div>
           <!-- /.card-header -->
           <div class="card-body">
@@ -114,7 +110,7 @@
 <!-- REQUIRED SCRIPTS -->
 
 {% block javascripts %}
-
+<script src="{% static 'dist/plugins/select2/js/select2.min.js' %}"></script>
 <script>
 $(document).ready(function(){
   var usertable = new DataTable('#userList', {

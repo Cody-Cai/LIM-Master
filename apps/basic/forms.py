@@ -1,5 +1,6 @@
 from django.forms import ModelForm, TextInput, HiddenInput, Textarea
-from .models import CompanyInfo, CompanyAddress
+from django.forms import inlineformset_factory
+from .models import CompanyInfo, CompanyAddress, UnitTxt, Unit
 from django.utils.translation import gettext_lazy as _
 
 
@@ -19,3 +20,8 @@ class CompanyAddressForm(ModelForm):
         widgets = {
             "address": Textarea(attrs={"rows": 3}),
         }
+
+
+UnitTxtFormset = inlineformset_factory(
+    Unit, UnitTxt, fields=["language", "unitid_txt"], extra=1, can_delete=True
+)
