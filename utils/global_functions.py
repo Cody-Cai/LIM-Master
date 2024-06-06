@@ -17,8 +17,11 @@ def get_current_users():
 
 
 from decimal import *
-def decround(number, ndigits=None, roundtype="O"):
+def decimal_round(number, ndigits=None, roundtype="O"):
     """Round decimal """
+    # Convert float to decimal
+    number_dec = Decimal(str(number)) if type(number) == float else number
+
     exp = Decimal('1.{}'.format(ndigits * '0')) if ndigits else Decimal('1')
     match roundtype:
         case "O":
@@ -28,4 +31,22 @@ def decround(number, ndigits=None, roundtype="O"):
         case "D":
             rounding = ROUND_DOWN
 
-    return type(number)(Decimal(number).quantize(exp, rounding))
+    #return type(number)(Decimal(number).quantize(exp, rounding))
+    return Decimal(number_dec).quantize(exp, rounding)
+
+
+def get_decimal_places(number):
+    """ decimal places """
+    # 将小数转换为字符串
+    number_str = str(number)
+    # 分离整数部分和小数部分
+    integer_part, decimal_part = number_str.split('.')
+    # 返回小数部分的长度
+    return len(decimal_part)
+
+
+
+
+
+
+ 

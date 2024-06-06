@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from apps.authentication.views import UserCreateView
+from authentication.views import UserCreateView
 
 app_name = "system"
 urlpatterns = [

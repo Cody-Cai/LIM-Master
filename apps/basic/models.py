@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import get_language, gettext_lazy as _
-from apps.system.models import Language
+from system.models import Language
 
 
 class CountryRegion(models.Model):
@@ -146,7 +146,6 @@ class NumberSequenceTable(models.Model):
     highest = models.PositiveIntegerField(_("largest"))
     next_rec = models.PositiveIntegerField(_("next"), blank=True)
     num_format = models.CharField(_("format"), max_length=30, blank=True)
-
 
     class Meta:
         verbose_name = _("number sequence")

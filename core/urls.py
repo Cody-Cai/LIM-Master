@@ -23,19 +23,21 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     #path("", include("apps.authentication.urls")), # Auth routes - login / register
-    path('', include('apps.authentication.urls')),
-    path('', include('apps.home.urls')),
-    path('system/', include('apps.system.urls')),
-    path('basic/', include('apps.basic.urls')),
-    path('hrm/', include('apps.hrm.urls')),
+    path('', include('authentication.urls')),
+    path('', include('home.urls')),
+    path('system/', include('system.urls')),
+    path('basic/', include('basic.urls')),
+    path('hrm/', include('hrm.urls')),
+    path('ledger/', include('ledger.urls')),
+    path('invent/', include('invent.urls')),
     path("i18n/", include("django.conf.urls.i18n")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # handling the 404 error
-handler404 = "apps.system.views.error_404_view"
+handler404 = "system.views.error_404_view"
 
-handler500 = "apps.system.views.error_500_view"
+handler500 = "system.views.error_500_view"
 
-handler403 = "apps.system.views.error_403_view"
+handler403 = "system.views.error_403_view"

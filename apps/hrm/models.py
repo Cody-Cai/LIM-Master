@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-from apps.basic.models import CountryRegion
+from basic.models import CountryRegion
 from django.conf import settings
 
 

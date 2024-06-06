@@ -1,4 +1,4 @@
-from apps.basic.models import NumberSequenceTable
+from basic.models import NumberSequenceTable
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 

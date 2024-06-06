@@ -98,12 +98,7 @@ $(document).ready(function(){
   table = new DataTable('#DataList',{
       ajax: "{% url 'basic:numbersequence-json' %}",
       columns: [
-          { data: 'number_code',
-            render: function (data, type, row) {
-              let link = '{% url 'basic:unit-text' 123 %}'.replace(/123/, row.id);
-              return data + '<a href="#" hx-get="' + link + '"' + 'class="d-none float-end" data-bs-toggle="modal" hx-target="#dialog" title="Unit Text"><i class="fa-solid fa-pen-to-square"></i></a>';
-            }
-          },
+          { data: 'number_code'},
           { data: 'txt' },
           { data: 'lowest' },
           { data: 'highest' },

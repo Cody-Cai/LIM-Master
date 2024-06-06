@@ -392,7 +392,7 @@ class NumberSequenceTableUpdateView(custom.ObjectUpdateView):
     model = NumberSequenceTable
     fields = '__all__'
     success_url = reverse_lazy('basic:numbersequence')
-    permission_required = "basic.change_unit"
+    permission_required = "basic.change_numbersequencetable"
     title = model._meta.verbose_name
 
 

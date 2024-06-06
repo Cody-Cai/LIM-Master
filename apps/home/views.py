@@ -5,7 +5,7 @@ from django.template import loader
 from django.urls import reverse, reverse_lazy, resolve
 from django.views.generic.base import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from apps.system.models import Menu
+from system.models import Menu
 from django.shortcuts import render
 # Create your views here.
 

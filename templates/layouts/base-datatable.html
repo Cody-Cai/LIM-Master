@@ -33,7 +33,7 @@
     
     {% comment %} Custom CSS to decrease the navbar height {% endcomment %}
     .navbar {
-      height: 40px;
+      height: 35px;
     }
 
      {% comment %} Adjust the padding to center the content vertically within the smaller navbar {% endcomment %}
@@ -52,7 +52,7 @@
   {% block stylesheets %}{% endblock stylesheets %}
 
 </head>
-<body class="hold-transition layout-fixed layout-top-nav sidebar-mini {% block body_class %}{% endblock body_class %}" data-panel-auto-height-mode="height">
+<body class="hold-transition {% block body_class %}{% endblock body_class %}" data-panel-auto-height-mode="height">
 <div class="wrapper bg-body-tertiary">
     <!--Any flash messages pop up in any page because this is the base template-->
     {% if messages %}
