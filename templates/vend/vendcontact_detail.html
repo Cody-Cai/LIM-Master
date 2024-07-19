@@ -1,0 +1,47 @@
+{% load i18n widget_tweaks %}
+<div hx-target="this" hx-swap="outerHTML swap:1s" class="shadow-sm p-3 mb-2 bg-body-tertiary rounded">
+    <div class="row g-3">
+        <div class="col-12 row mt-2">
+            <label for="contactname" class="col-sm-2 col-form-label">{% translate 'Name' %}:</label>
+            <div class="col-sm-3">
+                <input type="text" readonly class="form-control-plaintext" id="contactname" value={{vendcontact.name}}>
+            </div>
+            <div class="col-sm-2 mt-2 form-check">
+                <input type="checkbox" class="form-check-input" id="isprimary" value="{{ vendcontact.is_primary }}" {% if vendcontact.is_primary is True %} checked {% endif %} disabled>
+                <label class="form-check-label" for="isprimary">{% translate 'Primary' %}</label>
+            </div>
+        </div>
+        <div class="col-12 row mt-2">
+            <label for="telephone" class="col-sm-2 col-form-label">{% translate 'Telephone' %}:</label>
+            <div class="col-sm-3">
+                <input type="text" readonly class="form-control-plaintext" id="telephone" value={{vendcontact.telephone|default:""}}>
+            </div>
+            <label for="extension" class="col-sm-2 col-form-label">{% translate 'Extension' %}:</label>
+            <div class="col-sm-1">
+                <input type="text" readonly class="form-control-plaintext" id="extension" value={{vendcontact.telephoneext|default:""}}>
+            </div>
+            <label for="teleFax" class="col-sm-2 col-form-label">{% translate 'Fax' %}:</label>
+            <div class="col-sm-2">
+                <input type="text" readonly class="form-control-plaintext" id="teleFax" value={{vendcontact.teleFax|default:""}}>
+            </div>
+        </div>
+        <div class="col-12 row mt-2">
+            <label for="mobilephone" class="col-sm-2 col-form-label">{% translate 'Mobile phone' %}:</label>
+            <div class="col-sm-3">
+                <input type="text" readonly class="form-control-plaintext" id="mobilephone" value={{vendcontact.mobilephone|default:""}}>
+            </div>
+            <label for="email" class="col-sm-2 col-form-label">{% translate 'E-mail' %}:</label>
+            <div class="col-sm-4">
+                <input type="text" readonly class="form-control-plaintext" id="email" value={{vendcontact.email|default:""}}>
+            </div>
+        </div>
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+        {% if perms.vend.change_vendcontact %}
+        <button type="button" class="btn btn-info btn-sm" hx-get="{% url 'vend:vendcontact-update' vendcontact.id %}" hx-swap="outerHTML">{% translate 'Update' %}</button>
+        {% endif %}
+        {% if perms.vend.delete_vendcontact %}
+        <button class="btn btn-danger btn-sm" hx-get="{% url 'vend:vendcontact-delete' vendcontact.id %}" hx-target="#dialog" hx-swap="innerHTML">{% translate 'Delete' %}</button>
+        {% endif %}
+    </div>
+</div>

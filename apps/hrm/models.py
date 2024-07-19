@@ -99,11 +99,13 @@ class Employee(models.Model):
     
     #JSON
     def get_data(self):
+        str_unit = '' if self.orgnization_unit is None else self.orgnization_unit.unitid
+
         return {
             'id': self.id,
             'emplid': self.emplid,
             'name': self.name,
             'title': self.title.name,
-            'orgnization': self.orgnization_unit.unitid,
+            'orgnization': str_unit,
             'status': self.get_status_display()
         }

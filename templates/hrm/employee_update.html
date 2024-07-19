@@ -5,8 +5,8 @@
     <fieldset class="row g-3 mb-4">
       <legend>{% translate 'Identification' %}</legend>
       <div class="col-md-6">
-        <label for="{{ form.emplid.id_for_label }}" class="form-label">{% translate 'Employee' %}</label>
-        {% render_field form.emplid class="form-control" %}
+        <label for="{{ form.emplid.id_for_label }}" class="form-label">{{ form.emplid.label }} </label>
+        {% render_field form.emplid class="form-control" readonly="readonly" %}
         <div class="invalid-feedback">{{ form.emplid.errors|first }}</div>
       </div>
       <div class="col-md-6">

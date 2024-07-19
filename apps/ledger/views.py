@@ -9,7 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib import messages
 
-from .models import TaxTable, TaxGroupHeading, TaxItemGroupHeading
+from .models import TaxTable, TaxGroupHeading, TaxItemGroupHeading, PaymTerm
 from utils import custom
 
 import json
@@ -131,4 +131,44 @@ class TaxItemGroupHeadingDeleteView(custom.ObjectDeleteView):
     model = TaxItemGroupHeading
     success_url = reverse_lazy('ledger:taxitemgroupheading')
     permission_required = "ledger.delete_taxitemgroupheading"
+    title = model._meta.verbose_name
+
+
+class PaymTermListView(PermissionRequiredMixin, generic.ListView):
+    model = PaymTerm
+    template_name = "ledger/paymterm_list.html"
+    permission_required = "ledger.view_paymterm"
+
+
+class PaymTerm_Json(custom.JSONResponseMixin):
+    permission_required = "ledger.view_paymterm"
+
+    def get(self, request):
+        taxitemgroup = PaymTerm.objects.all()
+        data = [d.get_data() for d in taxitemgroup]
+        ret = {'data': data}
+        return JsonResponse(ret)
+
+
+class PaymTermCreateView(custom.ObjectCreateView):
+    model = PaymTerm
+    fields = '__all__'
+    success_url = reverse_lazy('ledger:paymterm')
+    permission_required = "ledger.add_paymterm"
+    title = model._meta.verbose_name
+
+
+class PaymTermUpdateView(custom.ObjectUpdateView):
+    model = PaymTerm
+    fields = '__all__'
+    success_url = reverse_lazy('ledger:paymterm')
+    permission_required = "ledger.change_paymterm"
+    title = model._meta.verbose_name
+    template_name = "common/offcanvas_form.html"
+
+
+class PaymTermDeleteView(custom.ObjectDeleteView):
+    model = PaymTerm
+    success_url = reverse_lazy('ledger:paymterm')
+    permission_required = "ledger.delete_paymterm"
     title = model._meta.verbose_name

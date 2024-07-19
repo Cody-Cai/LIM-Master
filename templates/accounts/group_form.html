@@ -1,5 +1,5 @@
 {% load i18n widget_tweaks %}
-{% comment %} {% with WIDGET_ERROR_CLASS='is-invalid' %} {% endcomment %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %} 
 <form hx-post="{{ request.path }}" class="modal-content shadow-none" style="max-height: 100%; height: 100%;">
   <div class="offcanvas-header border-bottom">
     <h5 class="offcanvas-title"><i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;
@@ -25,4 +25,4 @@
     <button type="submit" class="btn btn-primary">{% translate 'Submit' %}</button>
   </div>
 </form>
-{% comment %} {% endwith %} {% endcomment %}
+{% endwith %}

@@ -111,7 +111,10 @@ $(document).ready(function(){
           { data: 'emplid' },
           { data: 'name' },
           { data: 'title' },
-          { data: 'orgnization' },
+          { 
+            data: 'orgnization',
+            defaultContent: ''
+          },
           { data: 'status' },
       ],
       rowId: 'id',
@@ -205,6 +208,7 @@ function doDelete(id) {
   //window.location.href = "{% url 'group-delete' 123 %}".replace(/123/, id.toString())
     // issue a GET to /example and replace #offcanvas with the response
   htmx.ajax('GET', "{% url 'hrm:employee-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'});
+  table.row(':eq(0)', { page: 'current' }).select();
 }
 function setdetails(id) {
     // issue a GET to /example and replace #offcanvas with the response

@@ -1,0 +1,232 @@
+{% extends "layouts/base-datatable.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block navigation %}
+<nav class="navbar navbar-expand-sm fixed-top bg-light border shadow-sm rounded">
+  <div class="container-fluid">
+    <ul class="navbar-nav col-sm-6">
+      {% if perms.vend.add_vendtable %}  
+      <li class="nav-item">
+        <a hx-get="{% url 'vend:vendtable-create' %}" accesskey="N" class="btn btn-sm btn-light nav-link text-sm-center" data-bs-toggle="offcanvas" hx-target="#offcanvas" 
+        data-toggle="tooltip" data-bs-placement="bottom" data-bs-title= "New (Alt+N)">
+          <i class="fa-solid fa-plus"></i>&nbsp;&nbsp;{% translate 'New' %}
+        </a>
+      </li>
+      {% endif %}
+      {% if perms.vend.change_vendtable %}
+      <li class="nav-item">
+        <button type="button" id="btnSave" class="btn btn-light btn-sm nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Save' %} disabled>
+          <i class="fa-solid fa-floppy-disk"></i>&nbsp;&nbsp;{% translate 'Save' %}
+        </button>
+      </li>
+      {% endif %}
+      {% if perms.vend.delete_vendtable %}
+      <li class="nav-item">
+        <button type="button" id="btnDel" class="btn btn-light btn-sm nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Delete' %} disabled>
+          <i class="fa-regular fa-trash-can"></i>&nbsp;&nbsp;{% translate 'Delete' %}
+        </button>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <button type="button" id="btnrefresh" class="btn btn-sm btn-light nav-link" data-toggle="tooltip" data-bs-placement="bottom" data-bs-title={% translate 'Refresh' %} >
+          <i class="fa-solid fa-arrows-rotate"></i>&nbsp;&nbsp;{% translate 'Refresh' %}
+        </button>
+      </li>
+    </ul>
+    <div class="col-sm-6 d-flex justify-content-end">
+      <div class="btn-group" role="group" aria-label="related function">
+      </div>
+    </div>
+  </div>
+</nav>
+{% endblock navigation %}
+
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-tab-pane" type="button" role="tab" aria-controls="overview-tab-pane" aria-selected="true">{% translate 'Overview' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general-tab-pane" type="button" role="tab" aria-controls="general-tab-pane" aria-selected="false">{% translate 'General' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="setip-tab" data-bs-toggle="tab" data-bs-target="#setup-tab-pane" type="button" role="tab" aria-controls="setup-tab-pane" aria-selected="false">{% translate 'Setup' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="address-tab" data-bs-toggle="tab" data-bs-target="#address-tab-pane" type="button" role="tab" aria-controls="address-tab-pane" aria-selected="false">{% translate 'Address' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">{% translate 'Contact' %}</button>
+              </li>
+            </ul>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="overview-tab-pane" role="tabpanel" aria-labelledby="overview-tab" tabindex="0">
+                <table id="DataList" class="table table-sm table-striped table-bordered" style="width:100%">
+                  <thead>
+                      <tr>
+                        <th>{% translate "Account" %}</th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Short name" %}</th>
+                        <th>{% translate "Vend group" %}</th>
+                        <th>{% translate "Invoice account" %}</th>
+                        <th>{% translate "Currency" %}</th>
+                      </tr>
+                  </thead>
+                </table>
+              </div>
+              <div class="d-none" id="form-tab-pane" hx-target="this">
+              </div>
+            </div>
+          </div> <!-- /.card-body -->
+        </div><!-- /.card -->
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- /.content -->
+  </div>
+
+  <!-- Placeholder for the offcanvas -->
+  <div id="offcanvas" class="offcanvas offcanvas-end" aria-labelledby="offcanvasLabel" hx-target="this">
+  </div>
+
+  <!-- Placeholder for the modal -->
+  <div id="modal" class="modal">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+  </div>
+  <!-- Placeholder for the modal (item_txt) -->
+  <div id="txtmodal" class="modal">
+    <div id="txtdialog" class="modal-dialog modal-lg" hx-target="this"></div>
+  </div>
+
+{% endblock content %}  
+
+{% block javascripts %}
+<script src="{% static 'dist/plugins/select2/js/select2.full.min.js' %}"></script>
+<script src="{% static 'dist/plugins/select2/js/select2.min.js' %}"></script>
+<script>
+$(document).ready(function(){    
+  table = new DataTable('#DataList',{
+      ajax: "{% url 'vend:vendtable-json' %}",
+      columns: [
+          { data: 'account_num' },
+          { data: 'name' },
+          { data: 'short_name' },
+          { data: 'vend_group__code' },
+          { data: 'invoice_account__account_num' },
+          { data: 'currency__code' },
+      ],
+      rowId: 'id',
+      select: {
+          style: 'single'
+      },
+      colReorder: true,
+      "initComplete": function( settings, json ) {
+                    htmx.process('#DataList');
+                    table.row(':eq(0)', { page: 'current' }).select();
+      },
+  });
+
+  table
+    .on('select', function (e, dt, type, indexes) {
+      $('#btnSave,#btnDel').removeAttr("disabled");
+      var id = table.row({ selected: true }).id();
+      //remove other tab of details
+      //$('#address-tab-pane').remove();
+      setdetails(id);
+      var activeTab = $(".nav-link.active").attr('data-bs-target');
+      if (activeTab == '#overview-tab-pane')
+      {
+        var tabpane = '<div class="d-none" id="form-tab-pane" hx-target="this"></div>';
+        //$('#details-form').replaceWith(tabpane);
+        //htmx get detail form
+        //setdetails(id);
+        //alert('noactive');
+      }
+    })
+    .on('deselect', function (e, dt, type, indexes) {
+      $('#btnSave,#btnDel').attr("disabled", "disabled");
+      var tabpane = '<div class="d-none" id="form-tab-pane" hx-target="this"></div>';
+      //$('#details-form').replaceWith(tabpane);
+      $('#details-form').remove();
+      //alert('deselect')
+      //$('#details-tab-pane, #address-tab-pane').empty();
+    });
+
+  document.body.addEventListener("reloadTable", function(evt){
+    table.ajax.reload(function() {
+        htmx.process('#DataList');
+    }, false)
+  });
+  
+  $("#btnEdit").click(function () {    
+      var id = table.row({ selected: true }).id();
+      doUpdate(id);
+  });
+  $("#btnDel").click(function () {    
+      var id = table.row({ selected: true }).id();
+      doDelete(id);
+  });
+  $("#btnrefresh").click(function () {    
+      table.ajax.reload();
+  });
+  $("#btnSave").click(function () {
+      //var myInput = document.getElementById('id_name');
+      //if (!myInput.checkValidity()) {
+      $("#btnsubmit").click();
+      //$('#details-form').sumbit();
+  });
+  $('#nav-tab button').on('hide.bs.tab', event => {
+  // do something...
+    var activeTab = $(event.target).attr('data-bs-target');
+    //alert(activeTab)
+    var relatedTab = $(event.relatedTarget).attr('data-bs-target');
+    $(".tab-pane").not(relatedTab).addClass('d-none')
+    $(relatedTab).removeClass('d-none')
+
+    if(relatedTab=='#overview-tab-pane') {
+      $('#btnrefresh').removeAttr("disabled");
+      $('#form-tab-pane').addClass('d-none');
+    } else {
+      $('#btnrefresh').attr("disabled", "disabled");
+      $('#form-tab-pane').removeClass('d-none');
+    }
+  });
+
+  //Check if have edit permission
+  {% if not perms.vend.add_vendtable and not perms.vend.change_vendtable %}
+    $( "form :input" ).attr("readonly", "readonly");
+    $( "select" ).attr("disabled", "disabled");
+  {% endif %}
+});
+</script>
+<script>
+function doUpdate(id) {
+    // issue a GET to /example and replace #offcanvas with the response
+  htmx.ajax('GET', "{% url 'vend:vendtable-update' 123 %}".replace(/123/, id.toString()), {target:'#offcanvas', swap:'innerHTML'});
+}
+function doDelete(id) {
+  //window.location.href = "{% url 'group-delete' 123 %}".replace(/123/, id.toString())
+    // issue a GET to /example and replace #offcanvas with the response
+  htmx.ajax('GET', "{% url 'vend:vendtable-delete' 123 %}".replace(/123/, id.toString()), {target:'#dialog', swap:'innerHTML'});
+}
+function setdetails(id) {
+    // issue a GET to /example and replace #offcanvas with the response
+  htmx.ajax('GET', "{% url 'vend:vendtable-update' 123 %}".replace(/123/, id.toString()), {target:'#form-tab-pane', swap:'innerHTML'});
+}
+</script>
+{% endblock javascripts %}

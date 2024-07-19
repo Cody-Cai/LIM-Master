@@ -1,0 +1,51 @@
+{% load i18n widget_tweaks %}
+<div hx-target="this" hx-swap="outerHTML swap:1s" class="shadow-sm p-3 mb-2 bg-body-tertiary rounded">
+    <div class="row g-3">
+        <div class="col-12 row mt-2">
+            <label for="addressname" class="col-sm-1 col-form-label">{% translate 'Name' %}:</label>
+            <div class="col-sm-6">
+                <input type="text" readonly class="form-control-plaintext" id="addressname" value={{vendaddress.name}}>
+            </div>
+            <label for="addresstype" class="col-sm-1 col-form-label">{% translate 'Type' %}:</label>
+            <div class="col-sm-2">
+                <input type="text" readonly class="form-control-plaintext" id="addresstype" value={{vendaddress.get_addresstype_display}}>
+            </div>
+            <div class="col-sm-2 mt-2 form-check">
+                <input type="checkbox" class="form-check-input" id="isprimary" value="{{ vendaddress.is_primary }}" {% if vendaddress.is_primary is True %} checked {% endif %} disabled>
+                <label class="form-check-label" for="isprimary">{% translate 'Primary' %}</label>
+            </div>
+        </div>
+        <div class="col-12 row mt-2">
+            <label for="address" class="col-sm-1 col-form-label">{% translate 'Address' %}:</label>
+            <div class="col-sm-11">
+                <input type="text" readonly class="form-control-plaintext" id="address" value={{vendaddress.address}}>
+            </div>
+        </div>
+        <div class="col-12 row mt-2">
+            <label for="zipcode" class="col-sm-2 col-form-label">{% translate 'Postal code' %}:</label>
+            <div class="col-sm-1">
+                <input type="text" readonly class="form-control-plaintext" id="zipcode" value={{ vendaddress.zipcode|default:"" }}>
+            </div>
+            <label for="city" class="col-sm-1 col-form-label">{% translate 'City' %}:</label>
+            <div class="col-sm-2">
+                <input type="text" readonly class="form-control-plaintext" id="city" value={{ vendaddress.city|default:"" }}>
+            </div>
+            <label for="state" class="col-sm-1 col-form-label">{% translate 'State' %}:</label>
+            <div class="col-sm-2">
+                <input type="text" readonly class="form-control-plaintext" id="state" value={{ vendaddress.state|default:"" }}>
+            </div>
+            <label for="countryregion" class="col-sm-2 col-form-label">{% translate 'Country/region' %}:</label>
+            <div class="col-sm-1">
+                <input type="text" readonly class="form-control-plaintext" id="countryregion" value={{vendaddress.countryregion|default:""}}>
+            </div>
+        </div>
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+        {% if perms.vend.change_vendaddress %}
+        <button type="button" class="btn btn-info btn-sm" hx-get="{% url 'vend:vendaddress-update' vendaddress.id %}" hx-swap="outerHTML">{% translate 'Update' %}</button>
+        {% endif %}
+        {% if perms.vend.delete_vendaddress %}
+        <button class="btn btn-danger btn-sm" hx-get="{% url 'vend:vendaddress-delete' vendaddress.id %}" hx-target="#dialog" hx-swap="innerHTML">{% translate 'Delete' %}</button>
+        {% endif %}
+    </div>
+</div>

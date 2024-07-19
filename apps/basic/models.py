@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import get_language, gettext_lazy as _
 from system.models import Language
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class CountryRegion(models.Model):
@@ -26,7 +27,7 @@ class CompanyInfo(models.Model):
     en_name = models.CharField(max_length=60, null=True, blank=True, verbose_name=_('english name'))
     taxnum = models.CharField(max_length=18, null=True, blank=True, verbose_name=_('tax number'))
     address = models.CharField(max_length=250, null=True, blank=True, verbose_name=_('address'))
-    zipcode = models.CharField(max_length=10, null=True, blank=True, verbose_name=_('zip code'))
+    zipcode = models.CharField(max_length=10, null=True, blank=True, verbose_name=_('Postal code'))
     countryregion = models.ForeignKey('CountryRegion', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('Country/region'))
     language = models.ForeignKey('system.Language', on_delete=models.SET_NULL, null=True, blank=True)
     currency = models.ForeignKey('Currency', on_delete=models.SET_NULL, null=True, blank=True)
@@ -152,3 +153,38 @@ class NumberSequenceTable(models.Model):
 
     def __str__(self):
         return self.number_code
+
+
+""" Distribution models """
+class DlvTerm(models.Model):
+    code = models.CharField(max_length=10, unique=True, verbose_name=_("Delivery terms"))
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Description"))
+
+    class Meta:
+        verbose_name = _("Terms of delivery")
+
+    def __str__(self):
+        return self.code
+
+
+class DlvMode(models.Model):
+    code = models.CharField(max_length=10, unique=True, verbose_name=_("Delivery Mode"))
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Description"))
+
+    class Meta:
+        verbose_name = _("Mode of delivery")
+
+    def __str__(self):
+        return self.code
+
+    
+class DlvDestination(models.Model):
+    code = models.CharField(max_length=10, unique=True, verbose_name=_("Destination code"))
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Description"))
+
+    class Meta:
+        verbose_name = _("Destination of delivery")
+
+    def __str__(self):
+        return self.code
+        

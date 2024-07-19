@@ -4,8 +4,8 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext, gettext_lazy as _
-from django.db import models
-
+from django.db import models, IntegrityError
+from system.models import EmptyModel
 import json
 
 
@@ -41,6 +41,9 @@ class ObjectCreateView(PermissionRequiredMixin, CreateView):
     """
     template_name = "common/offcanvas_form.html"
 
+    def save_action(self):
+        pass
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.title
@@ -48,6 +51,7 @@ class ObjectCreateView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         super().form_valid(form)
+        self.save_action()  
         msg = _("%(title)s %(name)s created") % {"title": self.title, "name": self.object}
         return HttpResponse(
             status=204,
@@ -66,23 +70,28 @@ class ObjectUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = "common/offcanvas_form.html"
 
     def form_valid(self, form):
-        super().form_valid(form)
-        msg = _("%(title)s %(name)s updated") % {"title": self.title, "name": self.object}
-        return HttpResponse(
-            status=204,
-            headers={
-                'HX-Trigger': json.dumps({
-                    "reloadTable": None,
-                    "showMessage": f'{msg}'
+        try:
+            super().form_valid(form)
+            msg = _("%(title)s %(name)s updated") % {"title": self.title, "name": self.object}
+            return HttpResponse(
+                status=204,
+                headers={
+                    'HX-Trigger': json.dumps({
+                        "reloadTable": None,
+                        "showMessage": f'{msg}'
+                    })
                 })
-            })
+        except IntegrityError as e:
+            #messages.error(self.request, str(e))
+            self.object = self.get_object()
+            context = self.get_context_data(object=self.object, error=str(e))
+            return self.render_to_response(context)
 
 
 class ObjectDeleteView(PermissionRequiredMixin, DeleteView):
     """
     A mixin that can be used to render a create view for modal or offcanvas.
     """
-    title = None
     template_name = "common/modal_delete.html"
 
     def form_valid(self, form):

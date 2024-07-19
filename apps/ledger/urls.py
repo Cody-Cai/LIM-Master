@@ -19,4 +19,9 @@ urlpatterns = [
     path('setup/taxitemgroupheadingjson/', views.TaxItemGroupHeading_Json.as_view(), name="taxitemgroupheading-json"),
     path('setup/taxitemgroupheading/<int:pk>/update/', views.TaxItemGroupHeadingUpdateView.as_view(), name="taxitemgroupheading-update"),
     path('setup/taxitemgroupheading/<int:pk>/delete/', views.TaxItemGroupHeadingDeleteView.as_view(), name="taxitemgroupheading-delete"),
+    path('setup/paymterm/', views.PaymTermListView.as_view(), name="paymterm"),
+    path('setup/paymterm/create/', views.PaymTermCreateView.as_view(), name="paymterm-create"),
+    path('setup/paymtermjson/', views.PaymTerm_Json.as_view(), name="paymterm-json"),
+    path('setup/paymterm/<int:pk>/update/', views.PaymTermUpdateView.as_view(), name="paymterm-update"),
+    path('setup/paymterm/<int:pk>/delete/', views.PaymTermDeleteView.as_view(), name="paymterm-delete"),
 ]

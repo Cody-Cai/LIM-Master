@@ -5,6 +5,11 @@ from django.contrib.auth.models import Permission
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
+
+class EmptyModel(models.Model):
+    pass
+
+
 # Create your models here.
 class Language(models.Model):
     code = models.CharField(max_length=10, unique=True, verbose_name=_("Code"))

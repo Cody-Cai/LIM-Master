@@ -6,12 +6,24 @@
     {% if object %} {% blocktranslate with object_t=object %} Edit {{ object_t }} {% endblocktranslate %} {% else %} {% blocktranslate %} Add {{ title }} {% endblocktranslate %} {% endif %} </h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <div id="form_errors">
+            {% for value in form.non_field_errors %}
+                {{ value }}
+            {% endfor %}
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
   <div class="offcanvas-body">
     {% for field in form %}
       <div class="mb-3">
           <label for="{{ field.id_for_label }}" class="form-label">{{ field.label_tag }}</label>
-          {% if field|widget_type == 'selectmultiple' %}
+          {% if field|widget_type == 'selectmultiple' or field|widget_type == 'select' %}
             {% render_field field class="form-control select2" style="width: 100%" %} 
+          {% elif field|widget_type == 'dateinput' %}
+            {% render_field field class="form-control" type="date" %}
           {% else %}
             {% render_field field class="form-control" %}
           {% endif %}

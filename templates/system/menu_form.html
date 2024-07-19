@@ -6,7 +6,7 @@
     {% if object %} {% translate 'Edit Menu' %} {% else %} {% translate 'Add Menu' %} {% endif %} </h5>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
-   {% if form.errors %}
+  {% if form.errors %}
     <div class="alert alert-danger alert-dismissible" role="alert">
         <div id="form_errors">
             {% for key, value in form.errors.items %}
@@ -30,7 +30,7 @@
     </div>
     <div class="mb-3">
       <label for="{{ form.url.id_for_label }}" class="form-label">{% translate 'URL' %}</label>
-      {% render_field form.url|remove_attr:"required" class="form-control" autocomplete="off" %}
+      {% render_field form.url|remove_attr:"required" class="form-control" %}
       <div class="invalid-feedback">{{ form.url.errors|first }}</div>
     </div>
     <div class="mb-3">

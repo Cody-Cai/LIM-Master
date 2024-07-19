@@ -8,7 +8,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib import messages
-from .models import CountryRegion, Currency, CompanyInfo, CompanyAddress, Unit, UnitTxt, UnitConvert, NumberSequenceTable
+from .models import CountryRegion, Currency, CompanyInfo, CompanyAddress, Unit, UnitTxt, UnitConvert, NumberSequenceTable, DlvTerm, DlvMode, DlvDestination
 from .forms import CompanyForm, CompanyAddressForm
 from utils import custom
 
@@ -400,4 +400,118 @@ class NumberSequenceTableDeleteView(custom.ObjectDeleteView):
     model = NumberSequenceTable
     success_url = reverse_lazy('basic:numbersequence')
     permission_required = "basic.delete_numbersequencetable"
+    title = model._meta.verbose_name
+
+
+class DlvTermListView(PermissionRequiredMixin, generic.ListView):
+    model = DlvTerm
+    template_name = "basic/dlvterm_list.html"
+    permission_required = "basic.view_dlvterm"
+
+
+class DlvTerm_Json(custom.JSONResponseMixin):
+    permission_required = "basic.view_dlvterm"
+
+    def get_data(self, context):
+        fields = ['id','code', 'name']
+        ret = dict(data=list(DlvTerm.objects.values(*fields)))
+        return super().get_data(ret)
+
+
+class DlvTermCreateView(custom.ObjectCreateView):
+    model = DlvTerm
+    fields = '__all__'
+    success_url = reverse_lazy('basic:dlvterm')
+    permission_required = "basic.add_dlvterm"
+    title = model._meta.verbose_name
+
+
+class DlvTermUpdateView(custom.ObjectUpdateView):
+    model = DlvTerm
+    fields = ['id','code', 'name']
+    success_url = reverse_lazy('basic:dlvterm')
+    permission_required = "basic.change_dlvterm"
+    title = model._meta.verbose_name
+
+
+class DlvTermDeleteView(custom.ObjectDeleteView):
+    model = DlvTerm
+    success_url = reverse_lazy('basic:dlvterm')
+    permission_required = "basic.delete_dlvterm"
+    title = model._meta.verbose_name
+
+
+class DlvModeListView(PermissionRequiredMixin, generic.ListView):
+    model = DlvMode
+    template_name = "basic/dlvmode_list.html"
+    permission_required = "basic.view_dlvmode"
+
+
+class DlvMode_Json(custom.JSONResponseMixin):
+    permission_required = "basic.view_dlvmode"
+
+    def get_data(self, context):
+        fields = ['id','code', 'name']
+        ret = dict(data=list(DlvMode.objects.values(*fields)))
+        return super().get_data(ret)
+
+
+class DlvModeCreateView(custom.ObjectCreateView):
+    model = DlvMode
+    fields = '__all__'
+    success_url = reverse_lazy('basic:dlvmode')
+    permission_required = "basic.add_dlvmode"
+    title = model._meta.verbose_name
+
+
+class DlvModeUpdateView(custom.ObjectUpdateView):
+    model = DlvMode
+    fields = ['id','code', 'name']
+    success_url = reverse_lazy('basic:dlvmode')
+    permission_required = "basic.change_dlvmode"
+    title = model._meta.verbose_name
+
+
+class DlvModeDeleteView(custom.ObjectDeleteView):
+    model = DlvMode
+    success_url = reverse_lazy('basic:dlvmode')
+    permission_required = "basic.delete_dlvmode"
+    title = model._meta.verbose_name
+
+
+class DlvDestinationListView(PermissionRequiredMixin, generic.ListView):
+    model = DlvDestination
+    template_name = "basic/dlvdestination_list.html"
+    permission_required = "basic.view_dlvdestination"
+
+
+class DlvDestination_Json(custom.JSONResponseMixin):
+    permission_required = "basic.view_dlvdestination"
+
+    def get_data(self, context):
+        fields = ['id','code', 'name']
+        ret = dict(data=list(DlvDestination.objects.values(*fields)))
+        return super().get_data(ret)
+
+
+class DlvDestinationCreateView(custom.ObjectCreateView):
+    model = DlvDestination
+    fields = '__all__'
+    success_url = reverse_lazy('basic:dlvdestination')
+    permission_required = "basic.add_dlvdestination"
+    title = model._meta.verbose_name
+
+
+class DlvDestinationUpdateView(custom.ObjectUpdateView):
+    model = DlvDestination
+    fields = ['id','code', 'name']
+    success_url = reverse_lazy('basic:dlvdestination')
+    permission_required = "basic.change_dlvdestination"
+    title = model._meta.verbose_name
+
+
+class DlvDestinationDeleteView(custom.ObjectDeleteView):
+    model = DlvDestination
+    success_url = reverse_lazy('basic:dlvdestination')
+    permission_required = "basic.delete_dlvdestination"
     title = model._meta.verbose_name
